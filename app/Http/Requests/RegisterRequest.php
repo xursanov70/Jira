@@ -24,8 +24,8 @@ class RegisterRequest extends FormRequest
         return [
             "username"=>"required|unique:users,username,except,id",
             "password"=>"required",
-            "full_name"=>"required",
-            "phone"=>"required|max:13|min:13|unique:users,phone,except,id",
+            "fullname"=>"required",
+            "phone"=>"required|unique:users,phone,except,id",
             "email"=>"required|unique:users,email,except,id",
         ];
     }
@@ -38,7 +38,7 @@ class RegisterRequest extends FormRequest
 
         "password.required"=>"parol kiritng",
 
-        "full_name.required"=>"to'liq ismingizni kiriting",
+        "fullname.required"=>"to'liq ismingizni kiriting",
 
         "phone.required"=>"telefon raqam kiriting",
         "phone.unique"=>"bu raqam oldin kiritilgan",

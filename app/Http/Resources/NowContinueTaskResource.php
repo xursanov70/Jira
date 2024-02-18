@@ -16,6 +16,8 @@ class NowContinueTaskResource extends JsonResource
     {
         return [
             'user_id' => $this->username,
+            'task_name' => $this->task_name,
+            'description' => $this->description,
             'category_id' => $this->category_name,
             'start_task' => $this->start_task,
             'original_task' => $this->original_task,

@@ -22,7 +22,7 @@ class RegisterRepository implements RegisterInterface
         try {
 
             $user = User::create([
-                'full_name' => $request->full_name,
+                'fullname' => $request->fullname,
                 'username' => $request->username,
                 'phone' => $request->phone,
                 'email' => $request->email,

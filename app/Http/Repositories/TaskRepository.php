@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
+use App\Http\Resources\MyTaskResource;
 use App\Http\Resources\NowContinueTaskResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
@@ -15,9 +16,11 @@ class TaskRepository implements TaskInterface
 
     public function createTask(TaskRequest $request)
     {
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
+        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
         $task = Task::create([
             'user_id' => Auth::user()->id,
+            'task_name' => $request->task_name,
+            'description' => $request->description,
             'category_id' => $request->category_id,
             'start_task' => $formattedTime,
             'original_task' => $request->original_task,
@@ -34,6 +37,8 @@ class TaskRepository implements TaskInterface
         }
         $task->update([
             'category_id' => $request->category_id,
+            'task_name' => $request->task_name,
+            'description' => $request->description,
             'original_task' => $request->original_task,
             'high' => $request->high,
         ]);
@@ -43,8 +48,10 @@ class TaskRepository implements TaskInterface
 
     public function getMyTasks()
     {
-        $task = Task::select('*')->where('user_id', Auth::user()->id)->paginate(15);
-        return $task;
+        $task = Task::select('*')->where('user_id', Auth::user()->id)
+        ->orderBy('high', 'asc')
+        ->paginate(15);
+        return MyTaskResource::collection($task);
     }
 
     public function endTask(int $task_id)
@@ -72,7 +79,7 @@ class TaskRepository implements TaskInterface
 
     public function officialTasks()
     {
-        $tasks = Task::select('tasks.id as task_id', 'username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name','username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('categories', 'categories.id', '=', 'tasks.category_id')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('category_name', 'Official')
@@ -83,7 +90,7 @@ class TaskRepository implements TaskInterface
 
     public function personalTasks()
     {
-        $tasks = Task::select('tasks.id as task_id', 'username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('categories', 'categories.id', '=', 'tasks.category_id')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('category_name', 'Personal')
@@ -94,7 +101,7 @@ class TaskRepository implements TaskInterface
 
     public function finishedTasks()
     {
-        $tasks = Task::select('tasks.id as task_id', 'username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('categories', 'categories.id', '=', 'tasks.category_id')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.active', false)
@@ -106,7 +113,7 @@ class TaskRepository implements TaskInterface
 
     public function nowContinueTasks()
     {
-        $tasks = Task::select('tasks.id as task_id', 'username', 'category_id', 'start_task',  'original_task', 'high', 'category_name')
+        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'category_id', 'start_task',  'original_task', 'high', 'category_name')
             ->join('categories', 'categories.id', '=', 'tasks.category_id')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.active', true)

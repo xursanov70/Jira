@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TaskResource extends JsonResource
+class MyTaskResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,10 @@ class TaskResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user_id' => $this->username,
+            'user_id' => $this->user_id,
             'task_name' => $this->task_name,
             'description' => $this->description,
-            'category_id' => $this->category_name,
+            'category_id' => $this->category_id,
             'start_task' => $this->start_task,
             'end_task' => $this->end_task,
             'original_task' => $this->original_task,

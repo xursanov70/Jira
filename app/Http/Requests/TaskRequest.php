@@ -25,6 +25,8 @@ class TaskRequest extends FormRequest
             "category_id"=>"required",
             "original_task"=>"required",
             "high"=>"required",
+            "description"=>"required",
+            "task_name"=>"required",
         ];
     }
 
@@ -34,6 +36,8 @@ class TaskRequest extends FormRequest
         "category_id.required"=>"category_id kiritng",
         "original_task.required"=>"original_task kiritng",
         "high.required"=>"high kiritng",
+        "task_name.required"=>"Task nomini kiritng",
+        "description.required"=>"task haqida ma'lumot kiritng",
         ];
     }
 }
