@@ -17,61 +17,49 @@ use Illuminate\Support\Facades\Mail;
 
 class RegisterRepository implements RegisterInterface
 {
-
-    public function userRegister(RegisterRequest $request)
+    public function sendEmail(Request $request)
     {
-        try {
-            $user = User::create([
-                'fullname' => $request->fullname,
-                'username' => $request->username,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
 
-            $rand = rand(10000, 99999);
-            Mail::to($request->email)->send(new Message($rand));
+        $rand = rand(10000, 99999);
+        Mail::to($request->email)->send(new Message($rand));
 
-            ConfirmCode::create([
-                'code' => $rand,
-                'email' => $user->email
-            ]);
-            return response()->json(["message" => "Email pochtangizga kod jo'natildi"]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Transaction failed: ' . $e->getMessage()], 500);
-        }
+        ConfirmCode::create([
+            'code' => $rand,
+            'email' => $request->email
+        ]);
+        return response()->json(["message" => "Email pochtangizga kod jo'natildi"]);
     }
 
+   
     public function confirmCode(Request $request)
     {
-        $back = request('back');
-
-        $confirm_code = ConfirmCode::select('*')->where('email', $request->email)->first();
-        $user = User::select('*')->where('email', $request->email)->first();
+        $confirm_code = ConfirmCode::select('*')->where('email', $request->email)->orderBy('id', 'desc')->first();
 
         if (!$confirm_code) {
             return response()->json(["message" => "Noto'g'ri email kiritdingiz!"]);
         }
-
-        if ($confirm_code->code != $request->code) {
-            if ($back == 'yes') {
-                $delete = User::find($user->id);
-                $delete->delete();
-                $find = ConfirmCode::find($confirm_code->id);
-                $find->delete();
-                return response()->json(["message" => "Iltimos qaytdan tekshirib ma'lumotlaringizni kiriting!"]);
-            } else {
-                return response()->json(["message" => "Noto'g'ri kod kiritdingiz!"]);
-            }
-        } else {
+        if ($confirm_code->code == $request->code) {
             $find = ConfirmCode::find($confirm_code->id);
             $find->delete();
-
-            $token = $user->createToken('auth-token')->plainTextToken;
-
-            return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!", "token" => $token]);
+            return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!"]);
+        } else {
+            return response()->json(["message" => "Noto'g'ri kod kiritdingiz!"]);
         }
     }
+
+    public function userRegister(RegisterRequest $request)
+    {
+        $user =  User::create([
+            'fullname' => $request->fullname,
+            'username' => $request->username,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+        ]);
+        $token = $user->createToken('auth-token')->plainTextToken;
+        return response()->json(["message" => "Ro'yxatdan muvaffaqqiyatli o'tdingiz!", "token" => $token]);
+    }
+
 
     public function userLogin(Request $request)
     {

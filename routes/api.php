@@ -26,15 +26,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('send/message', [RegisterController::class, 'sendMessage']);
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
-    Route::post('send/email', [RegisterController::class, 'sendEmail']);
-
-    Route::post('confirm/code', [RegisterController::class, 'confirmCode']);
+    
     Route::post('user/login', [RegisterController::class, 'userLogin']);
+    Route::post('send/email', [RegisterController::class, 'sendEmail']);
+    Route::post('confirm/code', [RegisterController::class, 'confirmCode']);
+    Route::post('user/register', [RegisterController::class, 'userRegister']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
-    Route::post('user/register', [RegisterController::class, 'userRegister']);
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
     Route::get('user/filter', [RegisterController::class, 'filterUser']);

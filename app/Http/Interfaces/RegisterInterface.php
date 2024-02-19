@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 interface RegisterInterface
 {
+    function sendEmail(Request $request);
     function userRegister(RegisterRequest $request);
     function confirmCode(Request $request);
     function userLogin(Request $request);
