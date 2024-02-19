@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\RegisterInterface;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
+use App\Mail\Message;
+use App\Models\ConfirmCode;
+use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -33,5 +38,10 @@ class RegisterController extends Controller
     public function authUser()
     {
         return $this->registerInterface->authUser();
+    }
+
+    public function filterUser()
+    {
+        return $this->registerInterface->filterUser();
     }
 }

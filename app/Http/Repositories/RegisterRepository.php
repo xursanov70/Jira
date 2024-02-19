@@ -10,6 +10,7 @@ use App\Mail\Message;
 use App\Models\ConfirmCode;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -18,7 +19,6 @@ class RegisterRepository implements RegisterInterface
 
     public function userRegister(RegisterRequest $request)
     {
-
         try {
 
             $user = User::create([
@@ -38,7 +38,6 @@ class RegisterRepository implements RegisterInterface
             ]);
             return response()->json(["message" => "Email pochtangizga kod jo'natildi"]);
         } catch (\Exception $e) {
-
             return response()->json(['error' => 'Transaction failed: ' . $e->getMessage()], 500);
         }
     }
@@ -102,4 +101,21 @@ class RegisterRepository implements RegisterInterface
         $auth = Auth::user();
         return new UserResource($auth);
     }
+
+    public function filterUser()
+    {
+        $search = request('search');
+
+        $user = User::select('*')
+            ->when($search, function ($query) use ($search) {
+                $query->where('username', 'like', "%$search%")
+                    ->orWhere('fullname', 'like', "%$search%")
+                    ->orWhere('phone', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+            })
+            ->orderBy('users.id', 'asc')
+            ->paginate(15);
+        return UserResource::collection($user);
+    }
+    
 }

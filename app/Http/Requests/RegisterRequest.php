@@ -26,7 +26,7 @@ class RegisterRequest extends FormRequest
             "password"=>"required",
             "fullname"=>"required",
             "phone"=>"required|unique:users,phone,except,id",
-            "email"=>"required|unique:users,email,except,id",
+            "email"=>"required|indisposable|unique:users,email,except,id",
         ];
     }
 

@@ -26,6 +26,8 @@ Route::post('send/message', [RegisterController::class, 'sendMessage']);
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     Route::post('user/register', [RegisterController::class, 'userRegister']);
+    Route::post('test', [RegisterController::class, 'test']);
+
     Route::post('confirm/code', [RegisterController::class, 'confirmCode']);
     Route::post('user/login', [RegisterController::class, 'userLogin']);
 });
@@ -34,6 +36,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
+    Route::get('user/search', [RegisterController::class, 'search']);
 
     Route::post('create/category', [CategoryController::class, 'createCategory']);
     Route::put('update/category/{category_id}', [CategoryController::class, 'updateCategory']);
@@ -48,6 +51,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('personal/tasks', [TaskController::class, 'personalTasks']);     //personal  tasklar
     Route::get('finished/tasks', [TaskController::class, 'finishedTasks']);     //tugagan  tasklar admin koradi
     Route::get('now/continue/tasks', [TaskController::class, 'nowContinueTasks']);     //hali tugamagan  tasklar admin koradi
+    Route::get('search/task', [TaskController::class, 'filterTask']);
 
     Route::post('create/comment', [CommentController::class, 'createComment']);
     Route::put('update/comment/{comment_id}', [CommentController::class, 'updateComment']);

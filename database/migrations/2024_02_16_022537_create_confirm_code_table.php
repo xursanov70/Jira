@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('confirm_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->string('email')->unique();
+            $table->string('code');
+            $table->string('email');
             $table->timestamps();
         });
     }

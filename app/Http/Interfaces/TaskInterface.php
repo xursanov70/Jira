@@ -16,4 +16,5 @@ interface TaskInterface
     function personalTasks();
     function finishedTasks();
     function nowContinueTasks();
+    function filterTask();
 }

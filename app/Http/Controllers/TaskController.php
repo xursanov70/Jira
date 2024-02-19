@@ -38,41 +38,45 @@ class TaskController extends Controller
 
     function getTasks()
     {
-        if ($this->can('task', 'get') == 'denied')
-            return response()->json(["message" => "You are not allowed!"]);
+        // if ($this->can('task', 'get') == 'denied')
+        //     return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->getTasks();
     }
 
     function officialTasks()
     {
-        if ($this->can('task', 'get') == 'denied')
-        return response()->json(["message" => "You are not allowed!"]);
+        // if ($this->can('task', 'get') == 'denied')
+        // return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->officialTasks();
     }
 
     function personalTasks()
     {
-        if ($this->can('task', 'get') == 'denied')
-        return response()->json(["message" => "You are not allowed!"]);
+        // if ($this->can('task', 'get') == 'denied')
+        // return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->personalTasks();
     }
 
     function finishedTasks()
     {
-        if ($this->can('task', 'get') == 'denied')
-        return response()->json(["message" => "You are not allowed!"]);
+        // if ($this->can('task', 'get') == 'denied')
+        // return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->finishedTasks();
     }
 
     function nowContinueTasks()
     {
-        if ($this->can('task', 'get') == 'denied')
-        return response()->json(["message" => "You are not allowed!"]);
+        // if ($this->can('task', 'get') == 'denied')
+        // return response()->json(["message" => "You are not allowed!"]);
     
         return $this->taskInterface->nowContinueTasks();
+    }
+
+    public function filterTask(){
+        return $this->taskInterface->filterTask();
     }
 }

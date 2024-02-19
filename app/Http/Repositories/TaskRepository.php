@@ -122,4 +122,22 @@ class TaskRepository implements TaskInterface
 
         return NowContinueTaskResource::collection($tasks);
     }
+
+    public function filterTask(){
+        $search = request('search');
+
+        $task = Task::select('tasks.id as task_id', 'description', 'task_name','username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        ->join('categories', 'categories.id', '=', 'tasks.category_id')
+        ->join('users', 'users.id', '=', 'tasks.user_id')
+        ->when($search, function ($query) use ($search) {
+            $query->where('task_name', 'like', "%$search%")
+                ->orWhere('description', 'like', "%$search%")
+                ->orWhere('original_task', 'like', "%$search%")
+                ->orWhere('start_task', 'like', "%$search%")
+                ->orWhere('end_task', 'like', "%$search%");
+        })
+        ->orderBy('tasks.id', 'asc')
+        ->paginate(15);
+        return TaskResource::collection($task);
+    }
 }
