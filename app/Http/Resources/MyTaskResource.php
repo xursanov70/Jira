@@ -18,7 +18,7 @@ class MyTaskResource extends JsonResource
             'user_id' => $this->user_id,
             'task_name' => $this->task_name,
             'description' => $this->description,
-            'category_id' => $this->category_id,
+            'category_name' => $this->category_name,
             'start_task' => $this->start_task,
             'end_task' => $this->end_task,
             'original_task' => $this->original_task,

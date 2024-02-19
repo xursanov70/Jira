@@ -10,9 +10,10 @@ use App\Mail\Message;
 use App\Models\ConfirmCode;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+
+
 
 class RegisterRepository implements RegisterInterface
 {
@@ -20,7 +21,6 @@ class RegisterRepository implements RegisterInterface
     public function userRegister(RegisterRequest $request)
     {
         try {
-
             $user = User::create([
                 'fullname' => $request->fullname,
                 'username' => $request->username,
@@ -117,5 +117,4 @@ class RegisterRepository implements RegisterInterface
             ->paginate(15);
         return UserResource::collection($user);
     }
-    
 }

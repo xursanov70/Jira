@@ -22,31 +22,27 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            "username"=>"required|unique:users,username,except,id",
-            "password"=>"required",
-            "fullname"=>"required",
-            "phone"=>"required|unique:users,phone,except,id",
-            "email"=>"required|indisposable|unique:users,email,except,id",
+            "username" => "required|unique:users,username,except,id",
+            "password" => "required",
+            "fullname" => "required",
+            "phone" => "required|unique:users,phone,except,id",
         ];
     }
 
     public function messages()
     {
         return [
-        "username.required"=>"username kiritng",
-        "username.unique"=>"username oldin kiritilgan",
+            "username.required" => "username kiritng",
+            "username.unique" => "username oldin kiritilgan",
 
-        "password.required"=>"parol kiritng",
+            "password.required" => "parol kiritng",
 
-        "fullname.required"=>"to'liq ismingizni kiriting",
+            "fullname.required" => "to'liq ismingizni kiriting",
 
-        "phone.required"=>"telefon raqam kiriting",
-        "phone.unique"=>"bu raqam oldin kiritilgan",
-        "phone.max"=>"telefon raqamni to'liq kiriting",
-        "phone.min"=>"telefon raqamni to'liq kiriting",
-
-        "email.required"=>"email raqam kiriting",
-        "email.unique"=>"bu email oldin kiritilgan",
+            "phone.required" => "telefon raqam kiriting",
+            "phone.unique" => "bu raqam oldin kiritilgan",
+            "phone.max" => "telefon raqamni to'liq kiriting",
+            "phone.min" => "telefon raqamni to'liq kiriting",
         ];
     }
 }

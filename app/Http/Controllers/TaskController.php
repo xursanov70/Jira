@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
-use App\Http\Resources\NowContinueTaskResource;
-use App\Http\Resources\TaskResource;
-use App\Models\Task;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class TaskController extends Controller
 {
@@ -72,11 +69,12 @@ class TaskController extends Controller
     {
         // if ($this->can('task', 'get') == 'denied')
         // return response()->json(["message" => "You are not allowed!"]);
-    
+
         return $this->taskInterface->nowContinueTasks();
     }
 
-    public function filterTask(){
+    public function filterTask()
+    {
         return $this->taskInterface->filterTask();
     }
 }

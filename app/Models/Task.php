@@ -13,7 +13,7 @@ class Task extends Model
         'user_id',
         'task_name',
         'description',
-        'category_id',
+        'category_name',
         'start_task',
         'end_task',
         'original_task',

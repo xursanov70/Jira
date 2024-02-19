@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('send_tasks', function (Blueprint $table) {
             $table->id();
             $table->string('task_name');
-            $table->string('description');
-            $table->foreignId('user_id')->constrained('users');
             $table->string('category_name');
-            $table->dateTime('start_task');
-            $table->dateTime('end_task')->nullable();
-            $table->dateTime('original_task');
+            $table->string('description');
             $table->string('high');
-            $table->boolean('active')->default(true);
+            $table->dateTime('original_task');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('partner_id')->constrained('users');
+            $table->boolean('accept')->default(false);
+            $table->boolean('deleted_is')->default(false);
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('send_tasks');
     }
 };

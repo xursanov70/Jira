@@ -32,5 +32,4 @@ class Controller extends BaseController
         // if ($this->can('control', 'add') == 'denied')
         //     return response()->json(["message" => "You are not allowed!"]);
     }
-    
 }

@@ -21,7 +21,7 @@ class TaskRepository implements TaskInterface
             'user_id' => Auth::user()->id,
             'task_name' => $request->task_name,
             'description' => $request->description,
-            'category_id' => $request->category_id,
+            'category_name' => $request->category_name,
             'start_task' => $formattedTime,
             'original_task' => $request->original_task,
             'high' => $request->high,
@@ -36,7 +36,7 @@ class TaskRepository implements TaskInterface
             return response()->json(["message" => "Task mavjud emas!"]);
         }
         $task->update([
-            'category_id' => $request->category_id,
+            'category_name' => $request->category_name,
             'task_name' => $request->task_name,
             'description' => $request->description,
             'original_task' => $request->original_task,
@@ -49,8 +49,8 @@ class TaskRepository implements TaskInterface
     public function getMyTasks()
     {
         $task = Task::select('*')->where('user_id', Auth::user()->id)
-        ->orderBy('high', 'asc')
-        ->paginate(15);
+            ->orderBy('high', 'asc')
+            ->paginate(15);
         return MyTaskResource::collection($task);
     }
 
@@ -73,14 +73,16 @@ class TaskRepository implements TaskInterface
 
     public function getTasks()
     {
-        $get = Task::paginate(15);
+        $get = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->orderBy('start_task', 'desc')
+            ->paginate(15);
         return TaskResource::collection($get);
     }
 
     public function officialTasks()
     {
-        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name','username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('categories', 'categories.id', '=', 'tasks.category_id')
+        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('category_name', 'Official')
             ->orderBy('start_task', 'desc')
@@ -90,8 +92,7 @@ class TaskRepository implements TaskInterface
 
     public function personalTasks()
     {
-        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('categories', 'categories.id', '=', 'tasks.category_id')
+        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('category_name', 'Personal')
             ->orderBy('start_task', 'desc')
@@ -101,8 +102,7 @@ class TaskRepository implements TaskInterface
 
     public function finishedTasks()
     {
-        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('categories', 'categories.id', '=', 'tasks.category_id')
+        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.active', false)
             ->orderBy('start_task', 'desc')
@@ -113,8 +113,7 @@ class TaskRepository implements TaskInterface
 
     public function nowContinueTasks()
     {
-        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'category_id', 'start_task',  'original_task', 'high', 'category_name')
-            ->join('categories', 'categories.id', '=', 'tasks.category_id')
+        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task',  'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.active', true)
             ->orderBy('start_task', 'desc')
@@ -123,21 +122,21 @@ class TaskRepository implements TaskInterface
         return NowContinueTaskResource::collection($tasks);
     }
 
-    public function filterTask(){
+    public function filterTask()
+    {
         $search = request('search');
 
-        $task = Task::select('tasks.id as task_id', 'description', 'task_name','username', 'category_id', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-        ->join('categories', 'categories.id', '=', 'tasks.category_id')
-        ->join('users', 'users.id', '=', 'tasks.user_id')
-        ->when($search, function ($query) use ($search) {
-            $query->where('task_name', 'like', "%$search%")
-                ->orWhere('description', 'like', "%$search%")
-                ->orWhere('original_task', 'like', "%$search%")
-                ->orWhere('start_task', 'like', "%$search%")
-                ->orWhere('end_task', 'like', "%$search%");
-        })
-        ->orderBy('tasks.id', 'asc')
-        ->paginate(15);
+        $task = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->when($search, function ($query) use ($search) {
+                $query->where('task_name', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%")
+                    ->orWhere('original_task', 'like', "%$search%")
+                    ->orWhere('start_task', 'like', "%$search%")
+                    ->orWhere('end_task', 'like', "%$search%");
+            })
+            ->orderBy('tasks.id', 'asc')
+            ->paginate(15);
         return TaskResource::collection($task);
     }
 }
