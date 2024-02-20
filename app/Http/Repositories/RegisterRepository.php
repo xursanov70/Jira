@@ -19,7 +19,10 @@ class RegisterRepository implements RegisterInterface
 {
     public function sendEmail(Request $request)
     {
-
+        $user = User::select('*')->where('email', $request->email)->first();
+        if ($user){
+            return response()->json(["message" => "Siz oldin kiritilgan email address kiritdingiz!"]);
+        }
         $rand = rand(10000, 99999);
         Mail::to($request->email)->send(new Message($rand));
 
