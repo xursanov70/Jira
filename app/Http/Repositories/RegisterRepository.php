@@ -41,9 +41,9 @@ class RegisterRepository implements RegisterInterface
         if ($confirm_code->code == $request->code) {
             $find = ConfirmCode::find($confirm_code->id);
             $find->delete();
-            return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!"]);
+            return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!", 200]);
         } else {
-            return response()->json(["message" => "Noto'g'ri kod kiritdingiz!"]);
+            return response()->json(["message" => "Noto'g'ri kod kiritdingiz!", 400]);
         }
     }
 

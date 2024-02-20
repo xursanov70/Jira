@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 interface TaskInterface
 {
     function createTask(TaskRequest $request);
-    function updateTask(Request $request, $task_id);
+    function updateTask(Request $request, int $task_id);
     function endTask(int $task_id);
     function getMyTasks();
     function getTasks();

@@ -29,7 +29,7 @@ class TaskRepository implements TaskInterface
         return response()->json(["message" => "Task muvaffaqqiyatli yaratildi!", "data" => $task]);
     }
 
-    public function updateTask(Request $request, $task_id)
+    public function updateTask(Request $request, int $task_id)
     {
         $task = Task::find($task_id);
         if (!$task) {

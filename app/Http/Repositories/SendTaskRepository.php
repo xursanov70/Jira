@@ -26,14 +26,13 @@ class SendTaskRepository implements SendTaskInterface
         return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task]);
     }
 
-    public function updateSendTask(Request $request, $send_task_id)
+    public function updateSendTask(Request $request, int $send_task_id)
     {
         $task = SendTask::find($send_task_id);
         if (!$task) {
             return response()->json(["message" => "Task mavjud emas!"]);
         }
         $task->update([
-            'user_id' => Auth::user()->id,
             'partner_id' => $request->partner_id,
             'task_name' => $request->task_name,
             'description' => $request->description,
@@ -56,7 +55,7 @@ class SendTaskRepository implements SendTaskInterface
         return $task;
     }
 
-    public function acceptForMyTask($send_task_id)
+    public function acceptForMyTask(int $send_task_id)
     {
 
         $send_task = SendTask::select('*')
@@ -83,7 +82,7 @@ class SendTaskRepository implements SendTaskInterface
         return response()->json(["message" => "Taskni qabul qildingiz!"]);
     }
 
-    public function deleteForMyTask($send_task_id)
+    public function deleteForMyTask(int $send_task_id)
     {
         $send_task = SendTask::select('*')
             ->where('id', $send_task_id)

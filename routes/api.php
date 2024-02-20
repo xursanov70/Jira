@@ -23,7 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('send/message', [RegisterController::class, 'sendMessage']);
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     
@@ -42,7 +41,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::post('create/task', [TaskController::class, 'createTask']);
-    Route::put('update/task/{task_id}', [TaskController::class, 'updateTask']);
+    Route::post('update/task/{task_id}', [TaskController::class, 'updateTask']);
     Route::put('end/task/{task_id}', [TaskController::class, 'endTask']);  //taskni tugatish
     Route::get('get/my/tasks', [TaskController::class, 'getMyTasks']);     //mening tasklarim
     Route::get('get/tasks', [TaskController::class, 'getTasks']);     //hamma tasklar faqat admin koradi
@@ -53,6 +52,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('filter/task', [TaskController::class, 'filterTask']);
 
     Route::post('create/send/task', [SendTaskController::class, 'createSendTask']);
+    Route::post('update/send/task/{send_task_id}', [SendTaskController::class, 'updateSendTask']);
     Route::get('get/for/my/task', [SendTaskController::class, 'getForMyTask']);
     Route::get('accept/for/my/task/{send_task_id}', [SendTaskController::class, 'acceptForMyTask']);   //taskni qabul qilish
     Route::get('delete/for/my/task/{send_task_id}', [SendTaskController::class, 'deleteForMyTask']);  //qabul qmaslik
