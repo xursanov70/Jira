@@ -41,9 +41,9 @@ class RegisterRepository implements RegisterInterface
         if ($confirm_code->code == $request->code) {
             $find = ConfirmCode::find($confirm_code->id);
             $find->delete();
-            return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!", 200]);
+            return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!"], 200);
         } else {
-            return response()->json(["message" => "Noto'g'ri kod kiritdingiz!", 400]);
+            return response()->json(["message" => "Noto'g'ri kod kiritdingiz!"], 401);
         }
     }
 
@@ -57,7 +57,7 @@ class RegisterRepository implements RegisterInterface
             'password' => Hash::make($request->password),
         ]);
         $token = $user->createToken('auth-token')->plainTextToken;
-        return response()->json(["message" => "Ro'yxatdan muvaffaqqiyatli o'tdingiz!", "token" => $token]);
+        return response()->json(["message" => "Ro'yxatdan muvaffaqqiyatli o'tdingiz!", "token" => $token], 200);
     }
 
 

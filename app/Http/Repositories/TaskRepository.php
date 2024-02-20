@@ -75,7 +75,7 @@ class TaskRepository implements TaskInterface
     {
         $get = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->orderBy('start_task', 'desc')
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return TaskResource::collection($get);
     }
@@ -85,7 +85,7 @@ class TaskRepository implements TaskInterface
         $tasks = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('category_name', 'Official')
-            ->orderBy('start_task', 'desc')
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return TaskResource::collection($tasks);
     }
@@ -95,7 +95,7 @@ class TaskRepository implements TaskInterface
         $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('category_name', 'Personal')
-            ->orderBy('start_task', 'desc')
+             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return TaskResource::collection($tasks);
     }
@@ -105,7 +105,7 @@ class TaskRepository implements TaskInterface
         $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.active', false)
-            ->orderBy('start_task', 'desc')
+             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
 
         return TaskResource::collection($tasks);
@@ -116,7 +116,7 @@ class TaskRepository implements TaskInterface
         $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task',  'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.active', true)
-            ->orderBy('start_task', 'desc')
+             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
 
         return NowContinueTaskResource::collection($tasks);
@@ -135,7 +135,7 @@ class TaskRepository implements TaskInterface
                     ->orWhere('start_task', 'like', "%$search%")
                     ->orWhere('end_task', 'like', "%$search%");
             })
-            ->orderBy('tasks.id', 'asc')
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return TaskResource::collection($task);
     }

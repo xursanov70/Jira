@@ -50,7 +50,7 @@ class SendTaskRepository implements SendTaskInterface
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
             ->where('deleted_is', false)
-            ->orderBy('high', 'asc')
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return $task;
     }
@@ -104,7 +104,7 @@ class SendTaskRepository implements SendTaskInterface
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('user_id', Auth::user()->id)
             ->where('accept', true)
-            ->orderBy('high', 'asc')
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return $task;
     }
@@ -115,7 +115,7 @@ class SendTaskRepository implements SendTaskInterface
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('user_id', Auth::user()->id)
             ->where('deleted_is', true)
-            ->orderBy('high', 'asc')
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return $task;
     }
