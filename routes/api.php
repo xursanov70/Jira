@@ -54,8 +54,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('create/send/task', [SendTaskController::class, 'createSendTask']);
     Route::post('update/send/task/{send_task_id}', [SendTaskController::class, 'updateSendTask']);
     Route::get('get/for/my/task', [SendTaskController::class, 'getForMyTask']);
-    Route::get('accept/for/my/task/{send_task_id}', [SendTaskController::class, 'acceptForMyTask']);   //taskni qabul qilish
-    Route::get('delete/for/my/task/{send_task_id}', [SendTaskController::class, 'deleteForMyTask']);  //qabul qmaslik
+    Route::put('accept/for/my/task/{send_task_id}', [SendTaskController::class, 'acceptForMyTask']);   //taskni qabul qilish
+    Route::put('delete/for/my/task/{send_task_id}', [SendTaskController::class, 'deleteForMyTask']);  //qabul qmaslik
     Route::get('accept/tasks', [SendTaskController::class, 'acceptTasks']);  //qabul qlingan tasklar
     Route::get('deleted/tasks', [SendTaskController::class, 'deletedTasks']);  //qabul qlinmagan tasklar
 

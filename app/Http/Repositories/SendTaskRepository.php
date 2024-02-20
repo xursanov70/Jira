@@ -45,7 +45,7 @@ class SendTaskRepository implements SendTaskInterface
 
     public function getForMyTask()
     {
-        $task = SendTask::select('task_name', 'category_name', 'description', 'high', 'original_task', 'username')
+        $task = SendTask::select('send_tasks.id as send_task_id','task_name', 'category_name', 'description', 'high', 'original_task', 'username')
             ->join('users', 'users.id', '=', 'send_tasks.user_id')
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
@@ -100,7 +100,7 @@ class SendTaskRepository implements SendTaskInterface
 
     public function acceptTasks()
     {
-        $task = SendTask::select('task_name', 'category_name', 'description', 'high', 'original_task', 'username')
+        $task = SendTask::select('send_tasks.id as send_task_id','task_name', 'category_name', 'description', 'high', 'original_task', 'username')
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('user_id', Auth::user()->id)
             ->where('accept', true)
@@ -111,7 +111,7 @@ class SendTaskRepository implements SendTaskInterface
 
     public function deletedTasks()
     {
-        $task = SendTask::select('task_name', 'category_name', 'description', 'high', 'original_task', 'username')
+        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username')
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('user_id', Auth::user()->id)
             ->where('deleted_is', true)
