@@ -24,7 +24,7 @@ class SendTaskRequest extends FormRequest
         return [
             "partner_id" => "required",
             "category_name" => "required|in:Official, Personal",
-            'original_task' => 'required|date|after_or_equal:' . now('Asia/Tashkent')->format('Y-m-d H:i') . '|before:2050-01-01 00:00:00',
+            'original_task' => 'required|date|after_or_equal:' . now('Asia/Tashkent')->format('Y-m-d') . '|before:2050-01-01 00:00:00',
             'high' => 'required|in:High,Medium,Low',
             "description" => "required",
             "task_name" => "required",
@@ -42,7 +42,7 @@ class SendTaskRequest extends FormRequest
             "original_task.date" => "Task vaqtini to'g'ri kiritng",
             "original_task.before" => "Task uchun ko'p vaqt belgiladingiz",
             "high.required" => "high kiritng",
-            "high.in" => "Task uchun to'g'ri sifat bering",
+            "high.in" => "Zarurlik darajasini to'g'ri kiriting",
             "task_name.required" => "Task nomini kiritng",
             "description.required" => "task haqida ma'lumot kiritng",
         ];
