@@ -50,7 +50,7 @@ class SendTaskRepository implements SendTaskInterface
             ->join('users', 'users.id', '=', 'send_tasks.user_id')
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
-            ->where('deleted_is', false)
+            ->where('no_accept', false)
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return $task;
@@ -62,7 +62,7 @@ class SendTaskRepository implements SendTaskInterface
         $send_task = SendTask::select('*')
             ->where('id', $send_task_id)
             ->where('accept', false)
-            ->where('deleted_is', false)
+            ->where('no_accept', false)
             ->where('partner_id', Auth::user()->id)->first();
         if (!$send_task) {
             return response()->json(["message" => "Task mavjud emas!"]);
@@ -89,7 +89,7 @@ class SendTaskRepository implements SendTaskInterface
         $send_task = SendTask::select('*')
             ->where('id', $send_task_id)
             ->where('accept', false)
-            ->where('deleted_is', false)
+            ->where('no_accept', false)
             ->where('partner_id', Auth::user()->id)->first();
 
         if (!$send_task) {
@@ -100,7 +100,7 @@ class SendTaskRepository implements SendTaskInterface
             'title' => $request->title
         ]);
 
-        $send_task->deleted_is = true;
+        $send_task->no_accept = true;
         $send_task->save();
         return response()->json(["message" => "Taskni qabul qilmaganingiz tasdiqlandi!"]);
     } catch (\Exception $e) {
@@ -124,7 +124,7 @@ class SendTaskRepository implements SendTaskInterface
         $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'title', 'category_name', 'description', 'high', 'original_task', 'username')
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('user_id', Auth::user()->id)
-            ->where('deleted_is', true)
+            ->where('no_accept', true)
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return $task;

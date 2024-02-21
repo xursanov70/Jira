@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('partner_id')->constrained('users');
             $table->boolean('accept')->default(false);
-            $table->boolean('deleted_is')->default(false);
+            $table->boolean('no_accept')->default(false);
             $table->timestamps();
         });
     }

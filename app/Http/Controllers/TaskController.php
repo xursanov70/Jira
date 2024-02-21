@@ -35,8 +35,8 @@ class TaskController extends Controller
 
     function getTasks()
     {
-        // if ($this->can('task', 'get') == 'denied')
-        //     return response()->json(["message" => "You are not allowed!"]);
+        if ($this->can('task', 'get') == 'denied')
+            return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->getTasks();
     }
