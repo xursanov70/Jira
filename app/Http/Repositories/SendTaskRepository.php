@@ -3,6 +3,7 @@
 namespace App\Http\Repositories;
 
 use App\Http\Interfaces\SendTaskInterface;
+use App\Http\Requests\DeleteForMyTaskRequest;
 use App\Http\Requests\SendTaskRequest;
 use App\Models\SendTask;
 use App\Models\Task;
@@ -82,8 +83,9 @@ class SendTaskRepository implements SendTaskInterface
         return response()->json(["message" => "Taskni qabul qildingiz!"]);
     }
 
-    public function deleteForMyTask(int $send_task_id)
+    public function noAcceptForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)
     {
+        try {
         $send_task = SendTask::select('*')
             ->where('id', $send_task_id)
             ->where('accept', false)
@@ -93,9 +95,17 @@ class SendTaskRepository implements SendTaskInterface
         if (!$send_task) {
             return response()->json(["message" => "Task mavjud emas!"]);
         }
+        $send =SendTask::find($send_task_id);
+        $send->update([
+            'title' => $request->title
+        ]);
+
         $send_task->deleted_is = true;
         $send_task->save();
         return response()->json(["message" => "Taskni qabul qilmaganingiz tasdiqlandi!"]);
+    } catch (\Exception $e) {
+        throw $e;
+    }
     }
 
     public function acceptTasks()
@@ -109,9 +119,9 @@ class SendTaskRepository implements SendTaskInterface
         return $task;
     }
 
-    public function deletedTasks()
+    public function noAcceptTasks()
     {
-        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username')
+        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'title', 'category_name', 'description', 'high', 'original_task', 'username')
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('user_id', Auth::user()->id)
             ->where('deleted_is', true)

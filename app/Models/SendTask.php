@@ -16,5 +16,6 @@ class SendTask extends Model
         'user_id',
         'partner_id',
         'original_task',
+        'title',
     ];
 }

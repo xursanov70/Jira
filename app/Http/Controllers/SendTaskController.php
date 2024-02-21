@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Interfaces\SendTaskInterface;
+use App\Http\Requests\DeleteForMyTaskRequest;
 use App\Http\Requests\SendTaskRequest;
 use Illuminate\Http\Request;
 
@@ -34,9 +35,9 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->acceptForMyTask($send_task_id);
     }
 
-    public function deleteForMyTask(int $send_task_id)
+    public function noAcceptForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)
     {
-        return $this->sendTaskInterface->deleteForMyTask($send_task_id);
+        return $this->sendTaskInterface->noAcceptForMyTask($request, $send_task_id);
     }
 
     public function acceptTasks()
@@ -44,8 +45,8 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->acceptTasks();
     }
 
-    public function deletedTasks()
+    public function noAcceptTasks()
     {
-        return $this->sendTaskInterface->deletedTasks();
+        return $this->sendTaskInterface->noAcceptTasks();
     }
 }

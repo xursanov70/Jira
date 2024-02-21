@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('task_name');
             $table->string('category_name');
             $table->string('description');
+            $table->string('title')->nullable();
             $table->string('high');
             $table->dateTime('original_task');
             $table->foreignId('user_id')->constrained('users');
