@@ -43,11 +43,17 @@ class TaskController extends Controller
 
     function officialTasks()
     {
-        // if ($this->can('task', 'get') == 'denied')
-        // return response()->json(["message" => "You are not allowed!"]);
+        if ($this->can('task', 'get') == 'denied')
+            return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->officialTasks();
     }
+
+    function myOfficialTasks()
+    {
+        return $this->taskInterface->myOfficialTasks();
+    }
+
 
     function personalTasks()
     {
@@ -57,6 +63,12 @@ class TaskController extends Controller
         return $this->taskInterface->personalTasks();
     }
 
+    function myPersonalTasks()
+    {
+        return $this->taskInterface->myPersonalTasks();
+    }
+
+
     function finishedTasks()
     {
         // if ($this->can('task', 'get') == 'denied')
@@ -64,6 +76,12 @@ class TaskController extends Controller
 
         return $this->taskInterface->finishedTasks();
     }
+
+    function myFinishedTasks()
+    {
+        return $this->taskInterface->finishedTasks();
+    }
+
 
     function nowContinueTasks()
     {

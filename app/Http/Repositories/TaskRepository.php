@@ -90,6 +90,17 @@ class TaskRepository implements TaskInterface
         return TaskResource::collection($tasks);
     }
 
+    public function myOfficialTasks()
+    {
+        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->where('category_name', 'Official')
+            ->where('tasks.user_id', Auth::user()->id)
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+            ->paginate(15);
+        return TaskResource::collection($tasks);
+    }
+
     public function personalTasks()
     {
         $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
@@ -100,11 +111,35 @@ class TaskRepository implements TaskInterface
         return TaskResource::collection($tasks);
     }
 
+    public function myPersonalTasks()
+    {
+        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->where('category_name', 'Personal')
+            ->where('tasks.user_id', Auth::user()->id)
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+            ->paginate(15);
+        return TaskResource::collection($tasks);
+    }
+
+
     public function finishedTasks()
     {
         $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.active', false)
+             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+            ->paginate(15);
+
+        return TaskResource::collection($tasks);
+    }
+
+    public function myFinishedTasks()
+    {
+        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->where('tasks.active', false)
+            ->where('tasks.user_id', Auth::user()->id)
              ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
 

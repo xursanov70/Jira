@@ -13,8 +13,11 @@ interface TaskInterface
     function getMyTasks();
     function getTasks();
     function officialTasks();
+    function myOfficialTasks();
     function personalTasks();
+    function myPersonalTasks();
     function finishedTasks();
+    function myFinishedTasks();
     function nowContinueTasks();
     function filterTask();
 }

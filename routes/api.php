@@ -45,10 +45,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('end/task/{task_id}', [TaskController::class, 'endTask']);  //taskni tugatish
     Route::get('get/my/tasks', [TaskController::class, 'getMyTasks']);     //mening tasklarim
     Route::get('get/tasks', [TaskController::class, 'getTasks']);     //hamma tasklar faqat admin koradi
-    Route::get('official/tasks', [TaskController::class, 'officialTasks']);     //ishonch uchun tasklar
-    Route::get('personal/tasks', [TaskController::class, 'personalTasks']);     //personal  tasklar
-    Route::get('finished/tasks', [TaskController::class, 'finishedTasks']);     //tugagan  tasklar admin koradi
-    Route::get('now/continue/tasks', [TaskController::class, 'nowContinueTasks']);     //hali tugamagan  tasklar admin koradi
+    Route::get('official/tasks', [TaskController::class, 'officialTasks']);     //official uchun tasklar admin uchun
+    Route::get('personal/tasks', [TaskController::class, 'personalTasks']);     //personal  tasklar  admin uchun
+    Route::get('finished/tasks', [TaskController::class, 'finishedTasks']);     //tugagan tasklar admin uchun
+    Route::get('my/official/tasks', [TaskController::class, 'myOfficialTasks']);     //official tasklarim
+    Route::get('my/personal/tasks', [TaskController::class, 'myPersonalTasks']);     //personal tasklarim
+    Route::get('my/finished/tasks', [TaskController::class, 'myFinishedTasks']);         //tugagan tasklarim
+    Route::get('now/continue/tasks', [TaskController::class, 'nowContinueTasks']);     //hali tugamagan  tasklar admin uchun
     Route::get('filter/task', [TaskController::class, 'filterTask']);
 
     Route::post('create/send/task', [SendTaskController::class, 'createSendTask']);
