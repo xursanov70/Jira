@@ -19,5 +19,6 @@ interface TaskInterface
     function finishedTasks();
     function myFinishedTasks();
     function nowContinueTasks();
+    function lateTasks();
     function filterTask();
 }

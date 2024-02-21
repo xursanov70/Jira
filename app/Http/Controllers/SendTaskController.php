@@ -35,9 +35,9 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->acceptForMyTask($send_task_id);
     }
 
-    public function noAcceptForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)
+    public function declineForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)
     {
-        return $this->sendTaskInterface->noAcceptForMyTask($request, $send_task_id);
+        return $this->sendTaskInterface->declineForMyTask($request, $send_task_id);
     }
 
     public function acceptTasks()
@@ -45,8 +45,8 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->acceptTasks();
     }
 
-    public function noAcceptTasks()
+    public function declineTasks()
     {
-        return $this->sendTaskInterface->noAcceptTasks();
+        return $this->sendTaskInterface->declineTasks();
     }
 }

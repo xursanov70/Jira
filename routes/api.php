@@ -53,13 +53,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('my/finished/tasks', [TaskController::class, 'myFinishedTasks']);         //tugagan tasklarim
     Route::get('now/continue/tasks', [TaskController::class, 'nowContinueTasks']);     //hali tugamagan  tasklar admin uchun
     Route::get('filter/task', [TaskController::class, 'filterTask']);
+    Route::get('late/tasks', [TaskController::class, 'lateTasks']);                 //admin uchun
 
     Route::post('create/send/task', [SendTaskController::class, 'createSendTask']);
     Route::post('update/send/task/{send_task_id}', [SendTaskController::class, 'updateSendTask']);
     Route::get('get/for/my/task', [SendTaskController::class, 'getForMyTask']);
     Route::put('accept/for/my/task/{send_task_id}', [SendTaskController::class, 'acceptForMyTask']);   //taskni qabul qilish
-    Route::put('no/accept/for/my/task/{send_task_id}', [SendTaskController::class, 'noAcceptForMyTask']);  //qabul qmaslik
+    Route::put('decline/for/my/task/{send_task_id}', [SendTaskController::class, 'declineForMyTask']);  //qabul qmaslik
     Route::get('accept/tasks', [SendTaskController::class, 'acceptTasks']);  //qabul qlingan tasklar
-    Route::get('no/accept/tasks', [SendTaskController::class, 'noAcceptTasks']);  //qabul qlinmagan tasklar
+    Route::get('decline/tasks', [SendTaskController::class, 'declineTasks']);  //qabul qlinmagan tasklar
 
 });

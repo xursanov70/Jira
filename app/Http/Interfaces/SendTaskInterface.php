@@ -11,8 +11,8 @@ interface SendTaskInterface
     function createSendTask(SendTaskRequest $request);
     function updateSendTask(Request $request, int $send_task_id);
     function acceptForMyTask(int $send_task_id);
-    function noAcceptForMyTask(DeleteForMyTaskRequest $request, int $send_task_id);
+    function declineForMyTask(DeleteForMyTaskRequest $request, int $send_task_id);
     function getForMyTask();
     function acceptTasks();
-    function noAcceptTasks();
+    function declineTasks();
 }

@@ -23,8 +23,9 @@ class TaskRequest extends FormRequest
     {
         return [
             "category_name" => "required",
-            "original_task" => "required",
-            "high" => "required",
+            "category_name" => "required|in:Official, Personal",
+            'original_task' => 'required|date|after_or_equal:' . now('Asia/Tashkent')->format('Y-m-d H:i') . '|before:2050-01-01 00:00:00',
+            'high' =>  'required|in:High,Medium,Low',
             "description" => "required",
             "task_name" => "required",
         ];
@@ -34,8 +35,13 @@ class TaskRequest extends FormRequest
     {
         return [
             "category_name.required" => "category nomini kiritng",
-            "original_task.required" => "original_task kiritng",
+            "category_name.in" => "category nomini to'g'ri kiritng",
+            "original_task.required" => "task uchun vaqt belgilang",
+            "original_task.after_or_equal" => "Kiritilgan original task vaqti hozirgi vaqtdan oldin bo'lmasligi kerak",
+            "original_task.date" => "Task vaqtini to'g'ri kiritng",
+            "original_task.before" => "Task uchun ko'p vaqt belgiladingiz",
             "high.required" => "high kiritng",
+            "high.in" => "Task uchun to'g'ri sifat bering",
             "task_name.required" => "Task nomini kiritng",
             "description.required" => "task haqida ma'lumot kiritng",
         ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 
@@ -35,16 +36,16 @@ class TaskController extends Controller
 
     function getTasks()
     {
-        if ($this->can('task', 'get') == 'denied')
-            return response()->json(["message" => "You are not allowed!"]);
+        // if ($this->can('task', 'get') == 'denied')
+        //     return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->getTasks();
     }
 
     function officialTasks()
     {
-        if ($this->can('task', 'get') == 'denied')
-            return response()->json(["message" => "You are not allowed!"]);
+        // if ($this->can('task', 'get') == 'denied')
+        //     return response()->json(["message" => "You are not allowed!"]);
 
         return $this->taskInterface->officialTasks();
     }
@@ -94,5 +95,9 @@ class TaskController extends Controller
     public function filterTask()
     {
         return $this->taskInterface->filterTask();
+    }
+
+    public function lateTasks(){
+        return $this->taskInterface->lateTasks();
     }
 }

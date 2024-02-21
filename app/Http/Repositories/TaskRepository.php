@@ -16,7 +16,8 @@ class TaskRepository implements TaskInterface
 
     public function createTask(TaskRequest $request)
     {
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+
+    $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
         $task = Task::create([
             'user_id' => Auth::user()->id,
             'task_name' => $request->task_name,
@@ -24,7 +25,7 @@ class TaskRepository implements TaskInterface
             'category_name' => $request->category_name,
             'start_task' => $formattedTime,
             'original_task' => $request->original_task,
-            'high' => $request->high,
+            'high' => $request->high
         ]);
         return response()->json(["message" => "Task muvaffaqqiyatli yaratildi!", "data" => $task]);
     }
@@ -173,5 +174,16 @@ class TaskRepository implements TaskInterface
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->paginate(15);
         return TaskResource::collection($task);
+    }
+
+    public function lateTasks(){
+        $now = now('Asia/Tashkent')->format('Y-m-d H:i');
+         $get = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+         ->join('users', 'users.id', '=', 'tasks.user_id')
+         ->where('original_task', '<', $now)
+        ->where('tasks.active', true)
+        ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+        ->paginate(15);
+        return TaskResource::collection($get);
     }
 }
