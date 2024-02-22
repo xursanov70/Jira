@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Mail\Message;
 use App\Models\ConfirmCode;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -19,21 +20,27 @@ class RegisterRepository implements RegisterInterface
 {
     public function sendEmail(Request $request)
     {
-        $user = User::select('*')->where('email', $request->email)->first();
-        if ($user){
-            return response()->json(["message" => "Siz oldin kiritilgan email address kiritdingiz!"]);
-        }
-        $rand = rand(10000, 99999);
-        Mail::to($request->email)->send(new Message($rand));
+        try {
 
-        ConfirmCode::create([
-            'code' => $rand,
-            'email' => $request->email
-        ]);
-        return response()->json(["message" => "Email pochtangizga kod jo'natildi"]);
+            $user = User::select('*')->where('email', $request->email)->first();
+            if ($user) {
+                return response()->json(["message" => "Siz oldin kiritilgan email address kiritdingiz!"], 401);
+            }
+            $rand = rand(10000, 99999);
+            Mail::to($request->email)->send(new Message($rand));
+
+            ConfirmCode::create([
+                'code' => $rand,
+                'email' => $request->email,
+            ]);
+
+            return response()->json(["message" => "Email pochtangizga kod jo'natildi"], 200);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
-   
+
     public function confirmCode(Request $request)
     {
         $confirm_code = ConfirmCode::select('*')->where('email', $request->email)->orderBy('id', 'desc')->first();
@@ -75,7 +82,7 @@ class RegisterRepository implements RegisterInterface
         if (Auth::attempt($login)) {
             $user = $request->user();
             $token = $user->createToken('auth-token')->plainTextToken;
-            return response()->json(['token' => $token, 'success' => true]);
+            return response()->json(['token' => $token, 'success' => true], 200);
         } else {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }

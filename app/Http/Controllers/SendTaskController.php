@@ -7,7 +7,6 @@ use App\Http\Requests\DeleteForMyTaskRequest;
 use App\Http\Requests\SendTaskRequest;
 use Illuminate\Http\Request;
 
-
 class SendTaskController extends Controller
 {
     public function __construct(protected SendTaskInterface $sendTaskInterface)
@@ -24,11 +23,6 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->updateSendTask($request, $send_task_id);
     }
 
-    public function getForMyTask()
-    {
-        return $this->sendTaskInterface->getForMyTask();
-    }
-
     public function acceptForMyTask(int $send_task_id)
     {
 
@@ -40,13 +34,9 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->declineForMyTask($request, $send_task_id);
     }
 
-    public function acceptTasks()
+    public function forMeTasks()
     {
-        return $this->sendTaskInterface->acceptTasks();
+        return $this->sendTaskInterface->forMeTasks();
     }
 
-    public function declineTasks()
-    {
-        return $this->sendTaskInterface->declineTasks();
-    }
 }

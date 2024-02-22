@@ -4,10 +4,8 @@ namespace App\Http\Repositories;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
-use App\Http\Resources\MyTaskResource;
-use App\Http\Resources\NowContinueTaskResource;
-use App\Http\Resources\TaskResource;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,14 +45,6 @@ class TaskRepository implements TaskInterface
     }
 
 
-    public function getMyTasks()
-    {
-        $task = Task::select('*')->where('user_id', Auth::user()->id)
-            ->orderBy('high', 'asc')
-            ->paginate(15);
-        return MyTaskResource::collection($task);
-    }
-
     public function endTask(int $task_id)
     {
         $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
@@ -72,118 +62,56 @@ class TaskRepository implements TaskInterface
         }
     }
 
-    public function getTasks()
+    public function forAdmin()
     {
-        $get = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        $admin = request('admin');
+        $continue = request('continue');
+        $finish = request('finish');
+        $late = request('late');
+
+        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-        return TaskResource::collection($get);
-    }
-
-    public function officialTasks()
-    {
-        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->where('category_name', 'Official')
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-        return TaskResource::collection($tasks);
-    }
-
-    public function myOfficialTasks()
-    {
-        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->where('category_name', 'Official')
-            ->where('tasks.user_id', Auth::user()->id)
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-        return TaskResource::collection($tasks);
-    }
-
-    public function personalTasks()
-    {
-        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->where('category_name', 'Personal')
-             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-        return TaskResource::collection($tasks);
-    }
-
-    public function myPersonalTasks()
-    {
-        $tasks = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->where('category_name', 'Personal')
-            ->where('tasks.user_id', Auth::user()->id)
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-        return TaskResource::collection($tasks);
-    }
-
-
-    public function finishedTasks()
-    {
-        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->where('tasks.active', false)
-             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-
-        return TaskResource::collection($tasks);
-    }
-
-    public function myFinishedTasks()
-    {
-        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->where('tasks.active', false)
-            ->where('tasks.user_id', Auth::user()->id)
-             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-
-        return TaskResource::collection($tasks);
-    }
-
-    public function nowContinueTasks()
-    {
-        $tasks = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task',  'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->where('tasks.active', true)
-             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-
-        return NowContinueTaskResource::collection($tasks);
-    }
-
-    public function filterTask()
-    {
-        $search = request('search');
-
-        $task = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->when($search, function ($query) use ($search) {
-                $query->where('task_name', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%")
-                    ->orWhere('original_task', 'like', "%$search%")
-                    ->orWhere('start_task', 'like', "%$search%")
-                    ->orWhere('end_task', 'like', "%$search%");
+            ->when($admin, function ($query) use ($admin) {
+                $query->where('category_name', "$admin");
+            })
+            ->when($continue, function ($query) use ($continue){
+                $query->where('category_name', $continue)
+                ->where('tasks.active', true);
+            })
+            ->when($finish, function ($query) use ($finish){
+                $query->where('category_name', $finish)
+                ->where('tasks.active', false);
+            })
+            ->when($late, function ($query) use ($late){
+                $query->where('category_name', $late)
+                ->where('tasks.active', true)
+                ->where('original_task', '<', Carbon::parse(now('Asia/Tashkent')->format('Y-m-d')));
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+            ->orderBy('original_task', 'asc')
             ->paginate(15);
-        return TaskResource::collection($task);
+        return $task;
     }
 
-    public function lateTasks(){
-        $now = now('Asia/Tashkent')->format('Y-m-d H:i');
-         $get = Task::select('tasks.id as task_id', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-         ->join('users', 'users.id', '=', 'tasks.user_id')
-         ->where('original_task', '<', $now)
-        ->where('tasks.active', true)
-        ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-        ->paginate(15);
-        return TaskResource::collection($get);
+    public function forUser(){
+        $user = request('user');
+        $finish = request('finish');
+
+        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->when($user, function ($query) use ($user) {
+                $query->where('category_name', "$user")
+                ->where('tasks.user_id', Auth::user()->id);
+            })
+            ->when($finish, function ($query) use ($finish) {
+                $query->where('category_name', "$finish")
+                ->where('tasks.active', false)
+                ->where('tasks.user_id', Auth::user()->id);
+            })
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+            ->orderBy('original_task', 'asc')
+            ->paginate(15);
+        return $task;
     }
+
 }

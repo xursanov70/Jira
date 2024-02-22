@@ -24,14 +24,14 @@ class SendTaskRepository implements SendTaskInterface
             'original_task' => $request->original_task,
             'high' => $request->high,
         ]);
-        return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task]);
+        return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task], 200);
     }
 
     public function updateSendTask(Request $request, int $send_task_id)
     {
         $task = SendTask::find($send_task_id);
         if (!$task) {
-            return response()->json(["message" => "Task mavjud emas!"]);
+            return response()->json(["message" => "Task mavjud emas!"], 404);
         }
         $task->update([
             'partner_id' => $request->partner_id,
@@ -41,19 +41,7 @@ class SendTaskRepository implements SendTaskInterface
             'original_task' => $request->original_task,
             'high' => $request->high,
         ]);
-        return response()->json(["message" => "Task o'zgartirildi!"]);
-    }
-
-    public function getForMyTask()
-    {
-        $task = SendTask::select('send_tasks.id as send_task_id','task_name', 'category_name', 'description', 'high', 'original_task', 'username')
-            ->join('users', 'users.id', '=', 'send_tasks.user_id')
-            ->where('send_tasks.partner_id', Auth::user()->id)
-            ->where('accept', false)
-            ->where('decline', false)
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-        return $task;
+        return response()->json(["message" => "Task o'zgartirildi!"], 200);
     }
 
     public function acceptForMyTask(int $send_task_id)
@@ -86,46 +74,50 @@ class SendTaskRepository implements SendTaskInterface
     public function declineForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)
     {
         try {
-        $send_task = SendTask::select('*')
-            ->where('id', $send_task_id)
-            ->where('accept', false)
-            ->where('decline', false)
-            ->where('partner_id', Auth::user()->id)->first();
+            $send_task = SendTask::select('*')
+                ->where('id', $send_task_id)
+                ->where('accept', false)
+                ->where('decline', false)
+                ->where('partner_id', Auth::user()->id)->first();
 
-        if (!$send_task) {
-            return response()->json(["message" => "Task mavjud emas!"]);
+            if (!$send_task) {
+                return response()->json(["message" => "Task mavjud emas!"]);
+            }
+            $send = SendTask::find($send_task_id);
+            $send->update([
+                'title' => $request->title
+            ]);
+
+            $send_task->decline = true;
+            $send_task->save();
+            return response()->json(["message" => "Taskni qabul qilmaganingiz tasdiqlandi!"]);
+        } catch (\Exception $e) {
+            throw $e;
         }
-        $send =SendTask::find($send_task_id);
-        $send->update([
-            'title' => $request->title
-        ]);
-
-        $send_task->decline = true;
-        $send_task->save();
-        return response()->json(["message" => "Taskni qabul qilmaganingiz tasdiqlandi!"]);
-    } catch (\Exception $e) {
-        throw $e;
-    }
     }
 
-    public function acceptTasks()
+    public function forMeTasks()
     {
-        $task = SendTask::select('send_tasks.id as send_task_id','task_name', 'category_name', 'description', 'high', 'original_task', 'username')
-            ->join('users', 'users.id', '=', 'send_tasks.partner_id')
-            ->where('user_id', Auth::user()->id)
-            ->where('accept', true)
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->paginate(15);
-        return $task;
-    }
+        $accept = request('accept');
+        $decline = request('decline');
+        $my_task = request('my_task');
 
-    public function declineTasks()
-    {
-        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'title', 'category_name', 'description', 'high', 'original_task', 'username')
+        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username')
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
-            ->where('user_id', Auth::user()->id)
-            ->where('decline', true)
+            ->when($accept, function ($query) use ($accept) {
+                $query->where('category_name', $accept)
+                    ->where('send_tasks.accept', true);
+            })
+            ->when($decline, function ($query) use ($decline) {
+                $query->where('category_name', $decline)
+                    ->where('send_tasks.decline', true);
+            })
+            ->when($my_task, function ($query) use ($my_task) {
+                $query->where('category_name', $my_task)
+                    ->where('tasks.partner_id', Auth::user()->id);
+            })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+            ->orderBy('original_task', 'asc')
             ->paginate(15);
         return $task;
     }

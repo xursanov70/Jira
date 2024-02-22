@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
-use App\Models\Task;
 use Illuminate\Http\Request;
 
 
@@ -29,75 +28,17 @@ class TaskController extends Controller
         return $this->taskInterface->endTask($task_id);
     }
 
-    function getMyTasks()
-    {
-        return $this->taskInterface->getMyTasks();
-    }
 
-    function getTasks()
-    {
-        // if ($this->can('task', 'get') == 'denied')
-        //     return response()->json(["message" => "You are not allowed!"]);
-
-        return $this->taskInterface->getTasks();
-    }
-
-    function officialTasks()
-    {
-        // if ($this->can('task', 'get') == 'denied')
-        //     return response()->json(["message" => "You are not allowed!"]);
-
-        return $this->taskInterface->officialTasks();
-    }
-
-    function myOfficialTasks()
-    {
-        return $this->taskInterface->myOfficialTasks();
-    }
-
-
-    function personalTasks()
+    public function forAdmin()
     {
         // if ($this->can('task', 'get') == 'denied')
         // return response()->json(["message" => "You are not allowed!"]);
 
-        return $this->taskInterface->personalTasks();
+        return $this->taskInterface->forAdmin();
     }
 
-    function myPersonalTasks()
+    public function forUser()
     {
-        return $this->taskInterface->myPersonalTasks();
-    }
-
-
-    function finishedTasks()
-    {
-        // if ($this->can('task', 'get') == 'denied')
-        // return response()->json(["message" => "You are not allowed!"]);
-
-        return $this->taskInterface->finishedTasks();
-    }
-
-    function myFinishedTasks()
-    {
-        return $this->taskInterface->finishedTasks();
-    }
-
-
-    function nowContinueTasks()
-    {
-        // if ($this->can('task', 'get') == 'denied')
-        // return response()->json(["message" => "You are not allowed!"]);
-
-        return $this->taskInterface->nowContinueTasks();
-    }
-
-    public function filterTask()
-    {
-        return $this->taskInterface->filterTask();
-    }
-
-    public function lateTasks(){
-        return $this->taskInterface->lateTasks();
+        return $this->taskInterface->forUser();
     }
 }
