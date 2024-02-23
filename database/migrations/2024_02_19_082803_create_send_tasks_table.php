@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('send_tasks', function (Blueprint $table) {
             $table->id();
             $table->string('task_name');
-            $table->string('category_name');
+            $table->enum('category_name', ['Official', 'Personal']);
             $table->string('description');
             $table->string('title')->nullable();
             $table->string('high');

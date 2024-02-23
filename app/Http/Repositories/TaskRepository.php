@@ -80,8 +80,8 @@ class TaskRepository implements TaskInterface
                 ->where('tasks.active', true);
             })
             ->when($finish, function ($query) use ($finish){
-                $query->where('category_name', $finish)
-                ->where('tasks.active', false);
+                $query->where('tasks.active', false)
+                ->where('category_name', $finish);
             })
             ->when($late, function ($query) use ($late){
                 $query->where('category_name', $late)
@@ -102,6 +102,7 @@ class TaskRepository implements TaskInterface
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->when($user, function ($query) use ($user) {
                 $query->where('category_name', "$user")
+                ->where('tasks.active', true)
                 ->where('tasks.user_id', Auth::user()->id);
             })
             ->when($finish, function ($query) use ($finish) {

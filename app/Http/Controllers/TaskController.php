@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
-use App\Http\Resources\TaskResource;
-use App\Models\Task;
 use Illuminate\Http\Request;
 
 
@@ -34,7 +32,7 @@ class TaskController extends Controller
     public function forAdmin()
     {
         // if ($this->can('task', 'get') == 'denied')
-        // return response()->json(["message" => "You are not allowed!"]);
+        // return response()->json(["message" => "You are not allowed!"], 403);
 
         return $this->taskInterface->forAdmin();
     }

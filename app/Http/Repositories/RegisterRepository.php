@@ -47,7 +47,7 @@ class RegisterRepository implements RegisterInterface
         $confirm_code = ConfirmCode::select('*')->where('email', $request->email)->orderBy('id', 'desc')->first();
           
         if (!$confirm_code) {
-            return response()->json(["message" => "Noto'g'ri email kiritdingiz!"]);
+            return response()->json(["message" => "Noto'g'ri email kiritdingiz!"], 401);
         }
         if ($confirm_code->code == $request->code) {
            $create = new DateTime(Carbon::parse($confirm_code->created_at));
@@ -55,7 +55,7 @@ class RegisterRepository implements RegisterInterface
           
             $secund = $now->getTimestamp() - $create->getTimestamp();
             if ($secund >= 59) {
-                return response()->json(["message" => "Code kiritish vaqti tugagan!"], 200);
+                return response()->json(["message" => "Code kiritish vaqti tugagan!"], 401);
                 $find = ConfirmCode::find($confirm_code->id);
                 $find->delete();
             }
