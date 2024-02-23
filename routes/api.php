@@ -36,17 +36,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
-    Route::get('user/filter', [RegisterController::class, 'filterUser']);
-
-
-
+    Route::get('user/search', [RegisterController::class, 'searchUser']);
+    
+    
+    
     Route::post('create/task', [TaskController::class, 'createTask']);
     Route::post('update/task/{task_id}', [TaskController::class, 'updateTask']);
     Route::put('end/task/{task_id}', [TaskController::class, 'endTask']);  //taskni tugatish
-
+    
     Route::get('for/admin', [TaskController::class, 'forAdmin']);        //admin uchun         
     Route::get('for/user', [TaskController::class, 'forUser']);          //user uchun
-
+    Route::get('search/task', [TaskController::class, 'searchTask']);          
+    
     Route::post('create/send/task', [SendTaskController::class, 'createSendTask']);
     Route::post('update/send/task/{send_task_id}', [SendTaskController::class, 'updateSendTask']);
     Route::put('accept/for/my/task/{send_task_id}', [SendTaskController::class, 'acceptForMyTask']);   //taskni qabul qilish

@@ -13,5 +13,5 @@ interface RegisterInterface
     function userLogin(Request $request);
     function getUsers();
     function authUser();
-    function filterUser();
+    function searchUser();
 }

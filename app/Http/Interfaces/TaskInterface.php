@@ -12,4 +12,5 @@ interface TaskInterface
     function endTask(int $task_id);
     function forAdmin();
     function forUser();
+    function searchTask();
 }

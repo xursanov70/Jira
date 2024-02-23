@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
+use App\Http\Resources\TaskResource;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 
@@ -40,5 +42,10 @@ class TaskController extends Controller
     public function forUser()
     {
         return $this->taskInterface->forUser();
+    }
+
+    public function searchTask()
+    {
+        return $this->taskInterface->searchTask();
     }
 }

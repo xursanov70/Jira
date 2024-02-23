@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
+use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -112,6 +113,22 @@ class TaskRepository implements TaskInterface
             ->orderBy('original_task', 'asc')
             ->paginate(15);
         return $task;
+    }
+
+    public function searchTask()
+    {
+        $search = request('search');
+
+        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+            ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->when($search, function ($query) use ($search) {
+                $query->where('description', 'like', "%$search%")
+                    ->orWhere('task_name', 'like', "%$search%")
+                    ->orWhere('username', 'like', "%$search%");
+            })
+            ->orderBy('users.id', 'asc')
+            ->paginate(15);
+        return TaskResource::collection($task);
     }
 
 }

@@ -10,6 +10,7 @@ use App\Mail\Message;
 use App\Models\ConfirmCode;
 use App\Models\User;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -44,11 +45,21 @@ class RegisterRepository implements RegisterInterface
     public function confirmCode(Request $request)
     {
         $confirm_code = ConfirmCode::select('*')->where('email', $request->email)->orderBy('id', 'desc')->first();
-
+          
         if (!$confirm_code) {
             return response()->json(["message" => "Noto'g'ri email kiritdingiz!"]);
         }
         if ($confirm_code->code == $request->code) {
+           $create = new DateTime(Carbon::parse($confirm_code->created_at));
+            $now = new DateTime(Carbon::now());
+          
+            $secund = $now->getTimestamp() - $create->getTimestamp();
+            if ($secund >= 59) {
+                return response()->json(["message" => "Code kiritish vaqti tugagan!"], 200);
+                $find = ConfirmCode::find($confirm_code->id);
+                $find->delete();
+            }
+
             $find = ConfirmCode::find($confirm_code->id);
             $find->delete();
             return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!"], 200);
@@ -100,7 +111,7 @@ class RegisterRepository implements RegisterInterface
         return new UserResource($auth);
     }
 
-    public function filterUser()
+    public function searchUser()
     {
         $search = request('search');
 

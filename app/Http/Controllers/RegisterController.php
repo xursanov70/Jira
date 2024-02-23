@@ -39,8 +39,8 @@ class RegisterController extends Controller
         return $this->registerInterface->authUser();
     }
 
-    public function filterUser()
+    public function searchUser()
     {
-        return $this->registerInterface->filterUser();
+        return $this->registerInterface->searchUser();
     }
 }
