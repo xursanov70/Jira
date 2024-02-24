@@ -47,6 +47,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('for/admin', [TaskController::class, 'forAdmin']);        //admin uchun         
     Route::get('for/user', [TaskController::class, 'forUser']);          //user uchun
     Route::get('search/task', [TaskController::class, 'searchTask']);          
+    Route::get('history/task', [TaskController::class, 'historyTask']); 
+
+    Route::get('finish/task', [TaskController::class, 'finishTasks']);          
+    Route::get('continue/task', [TaskController::class, 'continueTasks']);          
+    Route::get('late/task', [TaskController::class, 'lateTasks']);      
+        
+    Route::get('user', [TaskController::class, 'user']);          
+    Route::get('admin', [TaskController::class, 'admin']);          
     
     Route::post('create/send/task', [SendTaskController::class, 'createSendTask']);
     Route::post('update/send/task/{send_task_id}', [SendTaskController::class, 'updateSendTask']);

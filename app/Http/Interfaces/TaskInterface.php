@@ -13,4 +13,10 @@ interface TaskInterface
     function forAdmin();
     function forUser();
     function searchTask();
+    function historyTask();
+    function finishTasks();
+    function continueTasks();
+    function lateTasks();
+    function user();
+    function admin();
 }
