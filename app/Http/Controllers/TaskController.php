@@ -29,39 +29,9 @@ class TaskController extends Controller
     }
 
 
-    public function forAdmin()
-    {
-        // if ($this->can('task', 'get') == 'denied')
-        // return response()->json(["message" => "You are not allowed!"], 403);
-
-        return $this->taskInterface->forAdmin();
-    }
-
-    public function forUser()
-    {
-        return $this->taskInterface->forUser();
-    }
-
     public function searchTask()
     {
         return $this->taskInterface->searchTask();
-    }
-
-    public function historyTask()
-    {
-        return $this->taskInterface->historyTask();
-    }
-
-    public function finishTasks(){
-        return $this->taskInterface->finishTasks();
-    }
-
-    public function continueTasks(){
-        return $this->taskInterface->continueTasks();
-    }
-
-    public function lateTasks(){
-        return $this->taskInterface->lateTasks();
     }
 
     public function user(){

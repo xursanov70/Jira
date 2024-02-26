@@ -63,59 +63,7 @@ class TaskRepository implements TaskInterface
         }
     }
 
-    public function forAdmin()
-    {
-        $admin = request('admin');
-        $continue = request('continue');
-        $finish = request('finish');
-        $late = request('late');
 
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->when($admin, function ($query) use ($admin) {
-                $query->where('category_name', "$admin");
-            })
-            ->when($continue, function ($query) use ($continue) {
-                $query->where('category_name', $continue)
-                    ->where('tasks.active', true);
-            })
-            ->when($finish, function ($query) use ($finish) {
-                $query->where('tasks.active', false)
-                    ->where('category_name', $finish);
-            })
-            ->when($late, function ($query) use ($late) {
-                $query->where('category_name', $late)
-                    ->where('tasks.active', true)
-                    ->where('original_task', '<', Carbon::parse(now('Asia/Tashkent')->format('Y-m-d')));
-            })
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->orderBy('original_task', 'asc')
-            ->paginate(20);
-        return $task;
-    }
-
-    public function forUser()
-    {
-        $user = request('user');
-        $finish = request('finish');
-
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->when($user, function ($query) use ($user) {
-                $query->where('category_name', "$user")
-                    ->where('tasks.active', true)
-                    ->where('tasks.user_id', Auth::user()->id);
-            })
-            ->when($finish, function ($query) use ($finish) {
-                $query->where('category_name', "$finish")
-                    ->where('tasks.active', false)
-                    ->where('tasks.user_id', Auth::user()->id);
-            })
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->orderBy('original_task', 'asc')
-            ->paginate(20);
-        return $task;
-    }
 
     public function searchTask()
     {
@@ -133,88 +81,10 @@ class TaskRepository implements TaskInterface
         return TaskResource::collection($task);
     }
 
-    public function historyTask()
-    {
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->orderBy('users.id', 'asc')
-            ->paginate(20);
-        return TaskResource::collection($task);
-    }
 
-    public function finishTasks()
+    public function user()
     {
 
-        $user = request('user');
-        $admin = request('admin');
-
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->when($user, function ($query) use ($user) {
-                $query->where('category_name', "$user")
-                    ->where('tasks.active', false)
-                    ->where('tasks.user_id', Auth::user()->id);
-            })
-            ->when($admin, function ($query) use ($admin) {
-                $query->where('category_name', "$admin")
-                    ->where('tasks.active', false);
-            })
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->orderBy('original_task', 'asc')
-            ->paginate(20);
-        return $task;
-    }
-
-    public function continueTasks()
-    {
-
-        $user = request('user');
-        $admin = request('admin');
-
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->when($user, function ($query) use ($user) {
-                $query->where('category_name', "$user")
-                    ->where('tasks.active', true)
-                    ->where('tasks.user_id', Auth::user()->id);
-            })
-            ->when($admin, function ($query) use ($admin) {
-                $query->where('category_name', "$admin")
-                    ->where('tasks.active', true);
-            })
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->orderBy('original_task', 'asc')
-            ->paginate(20);
-        return $task;
-    }
-
-    public function lateTasks()
-    {
-
-        $user = request('user');
-        $admin = request('admin');
-
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
-            ->join('users', 'users.id', '=', 'tasks.user_id')
-            ->when($user, function ($query) use ($user) {
-                $query->where('category_name', "$user")
-                    ->where('tasks.active', true)
-                    ->where('original_task', '<', now())
-                    ->where('tasks.user_id', Auth::user()->id);
-            })
-            ->when($admin, function ($query) use ($admin) {
-                $query->where('category_name', "$admin")
-                    ->where('original_task', '<', now())
-                    ->where('tasks.active', true);
-            })
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
-            ->orderBy('original_task', 'asc')
-            ->paginate(20);
-        return $task;
-    }
-
-    public function user(){
-        
         $finish = request('finish');
         $continue = request('continue');
 
@@ -236,8 +106,9 @@ class TaskRepository implements TaskInterface
         return $task;
     }
 
-    public function admin(){
-        
+    public function admin()
+    {
+
         $finish = request('finish');
         $continue = request('continue');
         $late = request('late');
@@ -262,6 +133,4 @@ class TaskRepository implements TaskInterface
             ->paginate(20);
         return $task;
     }
-
-    
 }
