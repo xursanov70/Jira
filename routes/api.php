@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('update/send/task/{send_task_id}', [SendTaskController::class, 'updateSendTask']);
     Route::put('accept/for/my/task/{send_task_id}', [SendTaskController::class, 'acceptForMyTask']);   //taskni qabul qilish
     Route::put('decline/for/my/task/{send_task_id}', [SendTaskController::class, 'declineForMyTask']);  //qabul qmaslik
-    Route::get('for/me/tasks', [SendTaskController::class, 'forMeTasks']);  //qabul qlingan tasklar
+    Route::get('for/me/tasks', [SendTaskController::class, 'forMeTasks']);  //menga kegan tasklar
+    Route::get('my/sand/tasks', [SendTaskController::class, 'mySendTasks']);  //men jonatgan tasklar
 
 });

@@ -90,7 +90,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
 
@@ -113,7 +113,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
 
@@ -129,7 +129,7 @@ class TaskRepository implements TaskInterface
                     ->orWhere('username', 'like', "%$search%");
             })
             ->orderBy('users.id', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return TaskResource::collection($task);
     }
 
@@ -138,7 +138,7 @@ class TaskRepository implements TaskInterface
         $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->orderBy('users.id', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return TaskResource::collection($task);
     }
 
@@ -161,7 +161,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
 
@@ -184,7 +184,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
 
@@ -209,7 +209,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
 
@@ -232,7 +232,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
 
@@ -259,7 +259,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
 

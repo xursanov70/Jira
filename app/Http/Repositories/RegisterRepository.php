@@ -101,7 +101,7 @@ class RegisterRepository implements RegisterInterface
 
     public function getUsers()
     {
-        $get = User::paginate(15);
+        $get = User::paginate(20);
         return UserResource::collection($get);
     }
 
@@ -123,7 +123,7 @@ class RegisterRepository implements RegisterInterface
                     ->orWhere('email', 'like', "%$search%");
             })
             ->orderBy('users.id', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return UserResource::collection($user);
     }
 }

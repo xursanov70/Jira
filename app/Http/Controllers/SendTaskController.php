@@ -39,4 +39,8 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->forMeTasks();
     }
 
+    public function mySendTasks()
+    {
+        return $this->sendTaskInterface->mySendTasks();
+    }
 }

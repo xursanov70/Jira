@@ -98,27 +98,41 @@ class SendTaskRepository implements SendTaskInterface
 
     public function forMeTasks()
     {
-        $accept = request('accept');
-        $decline = request('decline');
-        $my_task = request('my_task');
-
         $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username')
-            ->join('users', 'users.id', '=', 'send_tasks.partner_id')
-            ->when($accept, function ($query) use ($accept) {
-                $query->where('category_name', $accept)
-                    ->where('send_tasks.accept', true);
-            })
-            ->when($decline, function ($query) use ($decline) {
-                $query->where('category_name', $decline)
-                    ->where('send_tasks.decline', true);
-            })
-            ->when($my_task, function ($query) use ($my_task) {
-                $query->where('category_name', $my_task)
-                    ->where('tasks.partner_id', Auth::user()->id);
-            })
+            ->join('users', 'users.id', '=', 'send_tasks.user_id')
+            ->where('send_tasks.partner_id', Auth::user()->id)
+            ->where('accept', false)
+            ->where('decline', false)
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(15);
+            ->paginate(20);
         return $task;
     }
+
+    public function mySendTasks()
+    {
+        $task_accept = request('task_accept');
+        $task_decline = request('task_decline');
+        $task = request('task');
+
+        $get = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username')
+        ->join('users', 'users.id', '=', 'send_tasks.user_id')
+        ->when($task_accept, function ($query) use ($task_accept) {
+            $query->where('accept', $task_accept)
+                ->where('decline', false);
+        })
+        ->when($task_decline, function ($query) use ($task_decline) {
+            $query->where('decline', $task_decline)
+                ->where('accept', false);
+        })
+        ->when($task, function ($query) use ($task) {
+            $query->where('decline', $task)
+                ->where('accept', $task);
+        })
+        ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
+        ->orderBy('original_task', 'asc')
+        ->paginate(20);
+    return $get;
+    }
+
 }
