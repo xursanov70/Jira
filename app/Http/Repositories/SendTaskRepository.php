@@ -46,21 +46,22 @@ class SendTaskRepository implements SendTaskInterface
 
     public function acceptForMyTask(int $send_task_id)
     {
+        $auth = Auth::user()->id;
 
         $send_task = SendTask::select('*')
             ->where('id', $send_task_id)
             ->where('accept', false)
             ->where('decline', false)
-            ->where('partner_id', Auth::user()->id)->first();
+            ->where('partner_id', $auth)->first();
         if (!$send_task) {
-            return response()->json(["message" => "Task mavjud emas!"]);
+            return response()->json(["message" => "Task mavjud emas!"], 404);
         }
         $send_task->accept = true;
         $send_task->save();
 
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+        $formattedTime = now('Asia/Tashkent')->format('M d, Y');
         Task::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => $auth,
             'task_name' => $send_task->task_name,
             'description' => $send_task->description,
             'category_name' => $send_task->category_name,
@@ -68,32 +69,29 @@ class SendTaskRepository implements SendTaskInterface
             'original_task' => $send_task->original_task,
             'high' => $send_task->high,
         ]);
-        return response()->json(["message" => "Taskni qabul qildingiz!"]);
+        return response()->json(["message" => "Taskni qabul qildingiz!"], 200);
     }
 
     public function declineForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)
     {
-        try {
-            $send_task = SendTask::select('*')
-                ->where('id', $send_task_id)
-                ->where('accept', false)
-                ->where('decline', false)
-                ->where('partner_id', Auth::user()->id)->first();
 
-            if (!$send_task) {
-                return response()->json(["message" => "Task mavjud emas!"]);
-            }
-            $send = SendTask::find($send_task_id);
-            $send->update([
-                'title' => $request->title
-            ]);
+        $send_task = SendTask::select('*')
+            ->where('id', $send_task_id)
+            ->where('accept', false)
+            ->where('decline', false)
+            ->where('partner_id', Auth::user()->id)->first();
 
-            $send_task->decline = true;
-            $send_task->save();
-            return response()->json(["message" => "Taskni qabul qilmaganingiz tasdiqlandi!"]);
-        } catch (\Exception $e) {
-            throw $e;
+        if (!$send_task) {
+            return response()->json(["message" => "Task mavjud emas!"], 404);
         }
+        $send = SendTask::find($send_task_id);
+        $send->update([
+            'title' => $request->title
+        ]);
+
+        $send_task->decline = true;
+        $send_task->save();
+        return response()->json(["message" => "Taskni qabul qilmaganingiz tasdiqlandi!"], 200);
     }
 
     public function forMeTasks()
@@ -113,21 +111,16 @@ class SendTaskRepository implements SendTaskInterface
     {
         $accept = request('accept');
         $decline = request('decline');
-        $task = request('task');
+        $auth = Auth::user()->id;
 
-        $get = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username')
-            ->join('users', 'users.id', '=', 'send_tasks.user_id')
-            ->when($accept, function ($query) use ($accept) {
-                $query->where('accept', $accept)
-                    ->where('decline', false);
+        $get = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'accept', 'decline', 'high', 'original_task', 'username')
+            ->join('users', 'users.id', '=', 'send_tasks.partner_id')
+            ->where('send_tasks.user_id', $auth)
+            ->when($accept !== null, function ($query) use ($accept) {
+                return $query->where('accept', $accept);
             })
-            ->when($decline, function ($query) use ($decline) {
-                $query->where('decline', $decline)
-                    ->where('accept', false);
-            })
-            ->when($task, function ($query) use ($task) {
-                $query->where('decline', $task)
-                    ->where('accept', $task);
+            ->when($decline !== null, function ($query) use ($decline) { //null, 0 false
+                return $query->where('decline', $decline);
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')

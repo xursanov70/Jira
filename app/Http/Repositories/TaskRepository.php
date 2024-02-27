@@ -16,7 +16,7 @@ class TaskRepository implements TaskInterface
     public function createTask(TaskRequest $request)
     {
 
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+        $formattedTime = now('Asia/Tashkent')->format('M d, Y');
         $task = Task::create([
             'user_id' => Auth::user()->id,
             'task_name' => $request->task_name,
@@ -48,7 +48,7 @@ class TaskRepository implements TaskInterface
 
     public function endTask(int $task_id)
     {
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
+        $formattedTime = now('Asia/Tashkent')->format('M d, Y');
 
         $task = Task::find($task_id);
         if (!$task) {
@@ -87,18 +87,18 @@ class TaskRepository implements TaskInterface
 
         $finish = request('finish');
         $continue = request('continue');
+        $auth = Auth::user()->id;
 
         $task = Task::select('tasks.id as task_id', 'tasks.active',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
+            ->where('tasks.user_id', $auth)
             ->when($finish, function ($query) use ($finish) {
                 $query->where('category_name', "$finish")
-                    ->where('tasks.active', false)
-                    ->where('tasks.user_id', Auth::user()->id);
+                    ->where('tasks.active', false);
             })
             ->when($continue, function ($query) use ($continue) {
                 $query->where('category_name', "$continue")
-                    ->where('tasks.active', true)
-                    ->where('tasks.user_id', Auth::user()->id);
+                    ->where('tasks.active', true);
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
