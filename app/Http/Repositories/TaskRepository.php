@@ -6,7 +6,6 @@ use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +15,7 @@ class TaskRepository implements TaskInterface
     public function createTask(TaskRequest $request)
     {
 
-        $formattedTime = now('Asia/Tashkent')->format('M d, Y');
+        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
         $task = Task::create([
             'user_id' => Auth::user()->id,
             'task_name' => $request->task_name,
@@ -48,7 +47,7 @@ class TaskRepository implements TaskInterface
 
     public function endTask(int $task_id)
     {
-        $formattedTime = now('Asia/Tashkent')->format('M d, Y');
+        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
 
         $task = Task::find($task_id);
         if (!$task) {

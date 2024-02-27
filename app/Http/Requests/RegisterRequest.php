@@ -22,9 +22,9 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            "username" => "required|unique:users,username,except,id",
-            "password" => "required",
-            "fullname" => "required",
+            "username" => "required|max:20|regex:/^[A-Za-z0-9\-_]+$/|unique:users,username,except,id",
+            "password" => "required|min:6",
+            "fullname" => "required|max:20",
             "phone" => "required|unique:users,phone,except,id",
         ];
     }
@@ -34,9 +34,14 @@ class RegisterRequest extends FormRequest
         return [
             "username.required" => "username kiritng",
             "username.unique" => "username oldin kiritilgan",
+            "username.max" => "username 20 ta belgidan kam bo'lishi kerak",
+            "username.regex" => "yaroqsiz username kiritildi",
 
+            
             "password.required" => "parol kiritng",
-
+            "password.min" => "parol 6 ta belgidan kam bo'lmasligi kerak",
+            
+            "fullname.max" => "fullname 30 ta belgidan kam bo'lishi kerak",
             "fullname.required" => "to'liq ismingizni kiriting",
 
             "phone.required" => "telefon raqam kiriting",

@@ -15,6 +15,8 @@ class SendTaskRepository implements SendTaskInterface
 
     public function createSendTask(SendTaskRequest $request)
     {
+        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+
         $task = SendTask::create([
             'user_id' => Auth::user()->id,
             'partner_id' => $request->partner_id,
@@ -23,6 +25,7 @@ class SendTaskRepository implements SendTaskInterface
             'category_name' => $request->category_name,
             'original_task' => $request->original_task,
             'high' => $request->high,
+            'send_time' => $formattedTime
         ]);
         return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task], 200);
     }
@@ -59,7 +62,7 @@ class SendTaskRepository implements SendTaskInterface
         $send_task->accept = true;
         $send_task->save();
 
-        $formattedTime = now('Asia/Tashkent')->format('M d, Y');
+        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
         Task::create([
             'user_id' => $auth,
             'task_name' => $send_task->task_name,
@@ -96,7 +99,8 @@ class SendTaskRepository implements SendTaskInterface
 
     public function forMeTasks()
     {
-        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username')
+        
+        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username', 'send_time')
             ->join('users', 'users.id', '=', 'send_tasks.user_id')
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
@@ -109,6 +113,7 @@ class SendTaskRepository implements SendTaskInterface
 
     public function mySendTasks()
     {
+      
         $accept = request('accept');
         $decline = request('decline');
         $auth = Auth::user()->id;

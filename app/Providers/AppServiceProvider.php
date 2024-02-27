@@ -8,6 +8,9 @@ use App\Http\Interfaces\TaskInterface;
 use App\Http\Repositories\RegisterRepository;
 use App\Http\Repositories\SendTaskRepository;
 use App\Http\Repositories\TaskRepository;
+use App\Rules\EndsWithCom;
+use App\Rules\NoSpaces;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +30,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 }

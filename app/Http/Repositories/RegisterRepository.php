@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\Interfaces\RegisterInterface;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\SendEmailRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Mail\Message;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Mail;
 
 class RegisterRepository implements RegisterInterface
 {
-    public function sendEmail(Request $request)
+    public function sendEmail(SendEmailRequest $request)
     {
         try {
 

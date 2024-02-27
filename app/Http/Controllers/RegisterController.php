@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\RegisterInterface;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\SendEmailRequest;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
@@ -12,7 +13,7 @@ class RegisterController extends Controller
     {
     }
 
-    public function sendEmail(Request $request)
+    public function sendEmail(SendEmailRequest $request)
     {
         return $this->registerInterface->sendEmail($request);
     }
