@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SendEmailRequest extends FormRequest
+class ConfirmCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,14 @@ class SendEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => "required|ends_with:@gmail.com",
+            "code" => "required",
         ];
     }
 
     public function messages()
     {
         return [
-            "email.required" => "email kiriting",
-            "email.ends_with" => "yaroqsiz email kiritildi",
+            "code.required" => "code kiriting",
             
         ];
     }

@@ -23,10 +23,10 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->updateSendTask($request, $send_task_id);
     }
 
-    public function acceptForMyTask(int $send_task_id)
+    public function acceptForMyTask(Request $request, int $send_task_id)
     {
 
-        return $this->sendTaskInterface->acceptForMyTask($send_task_id);
+        return $this->sendTaskInterface->acceptForMyTask($request, $send_task_id);
     }
 
     public function declineForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)

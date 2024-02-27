@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Interfaces\RegisterInterface;
+use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class RegisterController extends Controller
         return $this->registerInterface->userRegister($request);
     }
 
-    public function confirmCode(Request $request)
+    public function confirmCode(ConfirmCodeRequest $request)
     {
         return $this->registerInterface->confirmCode($request);
     }
