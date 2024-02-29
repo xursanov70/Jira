@@ -20,7 +20,7 @@ class RegisterController extends Controller
     }
 
     public function userRegister(RegisterRequest $request)
-    {
+    { 
         return $this->registerInterface->userRegister($request);
     }
 

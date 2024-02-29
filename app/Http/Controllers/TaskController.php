@@ -40,8 +40,8 @@ class TaskController extends Controller
 
     public function admin(){
 
-        if ($this->can('task', 'get') == 'denied')
-        return response()->json(["message" => "You are not allowed!"], 403);
+        // if ($this->can('task', 'get') == 'denied')
+        // return response()->json(["message" => "You are not allowed!"], 403);
 
         return $this->taskInterface->admin();
     }

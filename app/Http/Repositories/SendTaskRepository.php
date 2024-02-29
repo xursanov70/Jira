@@ -88,7 +88,7 @@ class SendTaskRepository implements SendTaskInterface
     {
         try {
 
-            $send_task = SendTask::select('*')
+            $send_task = SendTask::select('id', 'accept', 'decline', 'partner_id', 'title')
                 ->where('id', $send_task_id)
                 ->where('accept', false)
                 ->where('decline', false)
@@ -105,7 +105,7 @@ class SendTaskRepository implements SendTaskInterface
             $send_task->decline = true;
             $send_task->save();
 
-            return response()->json(["message" => "Taskni qabul qilmaganingiz tasdiqlandi!"], 200);
+            return response()->json(["message" => "Taskni bekor qilganingiz tasdiqlandi!"], 200);
         } catch (Exception $e) {
             return $e;
         }

@@ -19,7 +19,7 @@ class RegisterRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             "username" => "required|max:20|regex:/^[A-Za-z0-9\-_]+$/|unique:users,username,except,id",
@@ -38,7 +38,7 @@ class RegisterRequest extends FormRequest
             "username.regex" => "yaroqsiz username kiritildi",
 
             
-            "password.required" => "parol kiritng",
+            "password.required" => "parol kiriting",
             "password.min" => "parol 6 ta belgidan kam bo'lmasligi kerak",
             
             "fullname.max" => "fullname 30 ta belgidan kam bo'lishi kerak",

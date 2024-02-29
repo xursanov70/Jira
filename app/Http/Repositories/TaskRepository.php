@@ -6,6 +6,7 @@ use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -107,6 +108,10 @@ class TaskRepository implements TaskInterface
 
     public function admin()
     {
+        // $user = User::select('*')->where('id', Auth::user()->id)->first();
+        // if ($user->status == 'developer'){
+        //     return response()->json(["message" => "Sizda bunday huquq yo'q!"], 403);
+        // }
 
         $finish = request('finish');
         $continue = request('continue');
@@ -129,7 +134,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(20);
+            ->paginate(5);
         return $task;
     }
 }

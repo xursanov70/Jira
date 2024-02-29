@@ -117,7 +117,7 @@ class RegisterRepository implements RegisterInterface
     {
         $search = request('search');
 
-        $user = User::select('*')
+        $user = User::select('id', 'fullname', 'email', 'username', 'phone')
             ->when($search, function ($query) use ($search) {
                 $query->where('username', 'like', "%$search%")
                     ->orWhere('fullname', 'like', "%$search%")
