@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ShareTaskRequest extends FormRequest
 {
@@ -24,6 +25,9 @@ class ShareTaskRequest extends FormRequest
         return [
             "task_id" => "required",
             "user_id" => "required",
+            Rule::unique('send_tasks')->where(function ($query){
+                return $query->where('partner_id', $this->partner_id);
+            })
         ];
     }
 

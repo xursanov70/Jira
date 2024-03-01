@@ -63,6 +63,7 @@ class SendTaskRepository implements SendTaskInterface
                 ->where('decline', false)
                 ->where('partner_id', $auth)
                 ->first();
+                  
             if (!$send_task) {
                 return response()->json(["message" => "Task mavjud emas!"], 404);
             }
@@ -82,6 +83,11 @@ class SendTaskRepository implements SendTaskInterface
                 'original_task' => $send_task->original_task,
                 'high' => $send_task->high,
             ]);
+            $task = Task::find($send_task->last_task_id);
+            if ($task){
+                $task->delete();
+            }
+            
             return response()->json(["message" => "Taskni qabul qildingiz!", "data" => $return], 200);
         } catch (Exception $e) {
             return $e;
@@ -154,16 +160,26 @@ class SendTaskRepository implements SendTaskInterface
 
     public function shareTask(ShareTaskRequest $request)
     {
-        try {
+        
             $auth = Auth::user()->id;
             $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
 
-            $task = Task::select('*')->where('user_id', $auth)->where('id', $request->task_id)->first();
+            $task = Task::select('*')->where('user_id', $auth)
+            ->where('active', true)
+            ->where('id', $request->task_id)->first();
 
             if (!$task) {
                 return response()->json(["message" => "Task mavjud emas!"], 404);
             }
+
+            $unique = SendTask::select('*')->where('partner_id', $request->user_id)
+            ->where('last_task_id', $request->task_id)->count();
+
+            if ($unique >= 1){
+                return response()->json(["message" => "Siz takror jo'natyapsiz!"], 404);
+            }
             SendTask::create([
+                'last_task_id' =>$task->id,
                 'user_id' => $auth,
                 'partner_id' => $request->user_id,
                 'task_name' => $task->task_name,
@@ -173,13 +189,8 @@ class SendTaskRepository implements SendTaskInterface
                 'high' => $task->high,
                 'send_time' => $formattedTime
             ]);
-            $find = Task::find($task->id);
-            $find->delete();
 
             return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
-        } catch (Exception $e) {
-            return $e;
-        }
     }
 
     public function addMyTask(AddMyTaskRequest $request)
