@@ -3,9 +3,12 @@
 namespace App\Http\Repositories;
 
 use App\Http\Interfaces\SendTaskInterface;
+use App\Http\Requests\AddMyTaskRequest;
 use App\Http\Requests\DeleteForMyTaskRequest;
 use App\Http\Requests\OriginalTaskRequest;
+use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\SendTaskRequest;
+use App\Http\Requests\ShareTaskRequest;
 use App\Models\SendTask;
 use App\Models\Task;
 use Exception;
@@ -147,5 +150,88 @@ class SendTaskRepository implements SendTaskInterface
             ->orderBy('original_task', 'asc')
             ->paginate(15);
         return $get;
+    }
+
+    public function shareTask(ShareTaskRequest $request)
+    {
+        try {
+            $auth = Auth::user()->id;
+            $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+
+            $task = Task::select('*')->where('user_id', $auth)->where('id', $request->task_id)->first();
+
+            if (!$task) {
+                return response()->json(["message" => "Task mavjud emas!"], 404);
+            }
+            SendTask::create([
+                'user_id' => $auth,
+                'partner_id' => $request->user_id,
+                'task_name' => $task->task_name,
+                'description' => $task->description,
+                'category_name' => $task->category_name,
+                'original_task' => $task->original_task,
+                'high' => $task->high,
+                'send_time' => $formattedTime
+            ]);
+            $find = Task::find($task->id);
+            $find->delete();
+
+            return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function addMyTask(AddMyTaskRequest $request)
+    {
+        try {
+            $auth = Auth::user()->id;
+            $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+
+            $decline_task = SendTask::select('*')->where('user_id', $auth)
+                ->where('id', $request->send_decline_task_id)
+                ->where('decline', true)
+                ->where('accept', false)
+                ->first();
+
+            if (!$decline_task) {
+                return response()->json(["message" => "Task mavjud emas!"], 404);
+            }
+
+            Task::create([
+                'user_id' => $auth,
+                'task_name' => $decline_task->task_name,
+                'description' => $decline_task->description,
+                'category_name' => $decline_task->category_name,
+                'start_task' => $formattedTime,
+                'original_task' => $decline_task->original_task,
+                'high' => $decline_task->high
+            ]);
+            $find = SendTask::find($decline_task->id);
+            $find->delete();
+            return response()->json(["message" => "Tasklaringiz ro'yxatiga muvaffaqqiyatli qo'shildi!"], 200);
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public function sendDeclineTAsk(SendDeclineTaskRequest $request)
+    {
+        try {
+            $decline_task =  SendTask::find($request->decline_task_id);
+
+            if (!$decline_task) {
+                return response()->json(["message" => "Task mavjud emas!"], 404);
+            }
+
+            $decline_task->update([
+                'partner_id' => $request->partner_id,
+            ]);
+            $decline_task->decline = false;
+            $decline_task->save();
+            return response()->json(["message" => "Task muvaffaqqiyatli jo'natildi!"], 200);
+        } catch (Exception $e) {
+            return $e;
+        }
     }
 }

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Interfaces\SendTaskInterface;
+use App\Http\Requests\AddMyTaskRequest;
 use App\Http\Requests\DeleteForMyTaskRequest;
 use App\Http\Requests\OriginalTaskRequest;
+use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\SendTaskRequest;
+use App\Http\Requests\ShareTaskRequest;
 use Illuminate\Http\Request;
 
 class SendTaskController extends Controller
@@ -43,5 +46,17 @@ class SendTaskController extends Controller
     public function mySendTasks()
     {
         return $this->sendTaskInterface->mySendTasks();
+    }
+
+    public function shareTask(ShareTaskRequest $request){
+        return $this->sendTaskInterface->shareTask($request);
+    }
+
+    public function sendDeclineTAsk(SendDeclineTaskRequest $request){
+        return $this->sendTaskInterface->sendDeclineTAsk($request);
+    }
+
+    public function addMyTask(AddMyTaskRequest $request){
+        return $this->sendTaskInterface->addMyTask($request);
     }
 }

@@ -62,5 +62,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('decline/for/my/task/{send_task_id}', [SendTaskController::class, 'declineForMyTask']);  //qabul qmaslik
     Route::get('for/me/tasks', [SendTaskController::class, 'forMeTasks']);  //menga kegan tasklar
     Route::get('my/sand/tasks', [SendTaskController::class, 'mySendTasks']);  //men jonatgan tasklar
+    Route::get('share/task', [SendTaskController::class, 'shareTask']);  //mavjud taskni jonatiw
+    Route::get('send/decline/task', [SendTaskController::class, 'sendDeclineTAsk']);  //decline taskni bowqaga jonatw
+    Route::get('add/my/task', [SendTaskController::class, 'addMyTask']);  //decline taskni oziga qoshish
 
 });
