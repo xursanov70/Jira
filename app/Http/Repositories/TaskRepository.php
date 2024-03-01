@@ -77,7 +77,7 @@ class TaskRepository implements TaskInterface
                     ->orWhere('username', 'like', "%$search%");
             })
             ->orderBy('users.id', 'asc')
-            ->paginate(20);
+            ->paginate(15);
         return TaskResource::collection($task);
     }
 
@@ -102,7 +102,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(20);
+            ->paginate(15);
         return $task;
     }
 
@@ -134,7 +134,7 @@ class TaskRepository implements TaskInterface
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(5);
+            ->paginate(15);
         return $task;
     }
 }

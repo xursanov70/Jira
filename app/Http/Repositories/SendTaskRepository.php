@@ -119,10 +119,10 @@ class SendTaskRepository implements SendTaskInterface
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
             ->where('decline', false)
-            
+
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(20);
+            ->paginate(15);
         return $task;
     }
 
@@ -142,9 +142,9 @@ class SendTaskRepository implements SendTaskInterface
             ->when($decline !== null, function ($query) use ($decline) { //null, 0 false
                 return $query->where('decline', $decline);
             })
-            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')") 
+            ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
-            ->paginate(20);
+            ->paginate(15);
         return $get;
     }
 }
