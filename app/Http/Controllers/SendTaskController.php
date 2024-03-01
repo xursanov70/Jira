@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\SendTaskInterface;
 use App\Http\Requests\DeleteForMyTaskRequest;
+use App\Http\Requests\OriginalTaskRequest;
 use App\Http\Requests\SendTaskRequest;
 use Illuminate\Http\Request;
 
@@ -23,7 +24,7 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->updateSendTask($request, $send_task_id);
     }
 
-    public function acceptForMyTask(Request $request, int $send_task_id)
+    public function acceptForMyTask(OriginalTaskRequest $request, int $send_task_id)
     {
 
         return $this->sendTaskInterface->acceptForMyTask($request, $send_task_id);

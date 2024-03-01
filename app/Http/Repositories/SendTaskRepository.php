@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\Interfaces\SendTaskInterface;
 use App\Http\Requests\DeleteForMyTaskRequest;
+use App\Http\Requests\OriginalTaskRequest;
 use App\Http\Requests\SendTaskRequest;
 use App\Models\SendTask;
 use App\Models\Task;
@@ -48,7 +49,7 @@ class SendTaskRepository implements SendTaskInterface
         return response()->json(["message" => "Task o'zgartirildi!"], 200);
     }
 
-    public function acceptForMyTask(Request $request, int $send_task_id)
+    public function acceptForMyTask(OriginalTaskRequest $request, int $send_task_id)
     {
         try {
             $auth = Auth::user()->id;
