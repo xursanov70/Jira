@@ -47,8 +47,6 @@ class SendTaskRepository implements SendTaskInterface
                 "original_task" => $request->original_task,
                 "high" => $request->high
             ];
-
-
             $user->notify(new SendTaskNotification($message));
 
             return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task], 200);
@@ -92,6 +90,19 @@ class SendTaskRepository implements SendTaskInterface
             $send_task->update([
                 'original_task' => $request->original_task
             ]);
+
+            $user = User::find($send_task->user_id);
+
+            $message = [
+                "hi" => "Yuborilgan taskingiz partner tomonidan qabul qilindi",
+                "task_name" => $send_task->task_name,
+                "description" => $send_task->description,
+                "category_name" => $send_task->category_name,
+                "original_task" => $send_task->original_task,
+                "high" => $send_task->high
+            ];
+            $user->notify(new SendTaskNotification($message));
+
             $send_task->accept = true;
             $send_task->save();
 
@@ -120,7 +131,7 @@ class SendTaskRepository implements SendTaskInterface
     {
         try {
 
-            $send_task = SendTask::select('id', 'accept', 'decline', 'partner_id', 'title')
+            $send_task = SendTask::select('*')
                 ->where('id', $send_task_id)
                 ->where('accept', false)
                 ->where('decline', false)
@@ -129,10 +140,21 @@ class SendTaskRepository implements SendTaskInterface
             if (!$send_task) {
                 return response()->json(["message" => "Task mavjud emas!"], 404);
             }
-            $send = SendTask::find($send_task_id);
-            $send->update([
+            $send_task->update([
                 'title' => $request->title
             ]);
+
+            $user = User::find($send_task->user_id);
+
+            $message = [
+                "hi" => "Yuborilgan taskingiz partner tomonidan rad qilindi",
+                "task_name" => $send_task->task_name,
+                "description" => $send_task->description,
+                "category_name" => $send_task->category_name,
+                "original_task" => $send_task->original_task,
+                "high" => $send_task->high
+            ];
+            $user->notify(new SendTaskNotification($message));
 
             $send_task->decline = true;
             $send_task->save();
@@ -182,6 +204,7 @@ class SendTaskRepository implements SendTaskInterface
 
     public function shareTask(ShareTaskRequest $request)
     {
+        try{
 
         $auth = Auth::user()->id;
         $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
@@ -200,7 +223,7 @@ class SendTaskRepository implements SendTaskInterface
         if ($unique >= 1) {
             return response()->json(["message" => "Siz takror jo'natyapsiz!"], 404);
         }
-        SendTask::create([
+      $send_task =  SendTask::create([
             'last_task_id' => $task->id,
             'user_id' => $auth,
             'partner_id' => $request->user_id,
@@ -211,7 +234,22 @@ class SendTaskRepository implements SendTaskInterface
             'high' => $task->high,
             'send_time' => $formattedTime
         ]);
+        $user = User::find($request->user_id);
+
+            $message = [
+                "hi" => "Sizga yangi task keldi",
+                "task_name" => $send_task->task_name,
+                "description" => $send_task->description,
+                "category_name" => $send_task->category_name,
+                "original_task" => $send_task->original_task,
+                "high" => $send_task->high
+            ];
+            $user->notify(new SendTaskNotification($message));
+
         return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
+    } catch (Exception $e) {
+        return $e;
+    }
     }
 
     public function addMyTask(AddMyTaskRequest $request)
@@ -264,6 +302,17 @@ class SendTaskRepository implements SendTaskInterface
             ]);
             $decline_task->decline = false;
             $decline_task->save();
+            $user = User::find($decline_task->partner_id);
+
+            $message = [
+                "hi" => "Sizga yangi task keldi",
+                "task_name" => $decline_task->task_name,
+                "description" => $decline_task->description,
+                "category_name" => $decline_task->category_name,
+                "original_task" => $decline_task->original_task,
+                "high" => $decline_task->high
+            ];
+            $user->notify(new SendTaskNotification($message));
             return response()->json(["message" => "Task muvaffaqqiyatli jo'natildi!"], 200);
         } catch (Exception $e) {
             return $e;

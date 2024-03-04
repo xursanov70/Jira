@@ -25,6 +25,14 @@ class ShareTaskRequest extends FormRequest
         return [
             "task_id" => "required",
             "user_id" => "required",
+            // "user_id" => [
+            //     "required",
+            //     "integer",
+            //     "exists:users,id",
+            //     Rule::unique('tasks')->where(function ($query) {
+            //         return $query->where('id', $this->task_id);
+            //     })
+            // ]
         ];
     }
 
@@ -33,7 +41,7 @@ class ShareTaskRequest extends FormRequest
         return [
             "task_id.required" => "task_id kiriting",
             "user_id.required" => "user_id kiriting",
-            
+
         ];
     }
 }
