@@ -24,7 +24,7 @@ class RegisterRequest extends FormRequest
         return [
             "username" => "required|max:20|regex:/^[A-Za-z0-9\-_]+$/|unique:users,username,except,id",
             "password" => "required|min:6",
-            "fullname" => "required|max:20",
+            "fullname" => "required|max:30",
             "phone" => "required|unique:users,phone,except,id",
         ];
     }

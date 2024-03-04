@@ -11,6 +11,8 @@ use App\Http\Requests\SendTaskRequest;
 use App\Http\Requests\ShareTaskRequest;
 use App\Models\SendTask;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\SendTaskNotification;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -189,7 +191,6 @@ class SendTaskRepository implements SendTaskInterface
                 'high' => $task->high,
                 'send_time' => $formattedTime
             ]);
-
             return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
     }
 
@@ -229,7 +230,10 @@ class SendTaskRepository implements SendTaskInterface
     public function sendDeclineTAsk(SendDeclineTaskRequest $request)
     {
         try {
-            $decline_task =  SendTask::find($request->decline_task_id);
+            $decline_task =  SendTask::select('*')->where('id', $request->decline_task_id)
+            ->where('decline', true)
+            ->where('accept', false)
+            ->first();
 
             if (!$decline_task) {
                 return response()->json(["message" => "Task mavjud emas!"], 404);
