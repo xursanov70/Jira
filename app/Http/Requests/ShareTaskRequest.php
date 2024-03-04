@@ -23,8 +23,8 @@ class ShareTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "task_id" => "required",
-            "user_id" => "required",
+            "task_id" => "required|string",
+            "user_id" => "required|string",
             // "user_id" => [
             //     "required",
             //     "integer",

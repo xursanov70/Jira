@@ -49,7 +49,7 @@ class SendTaskRepository implements SendTaskInterface
             ];
             $user->notify(new SendTaskNotification($message));
 
-            return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task], 200);
+            return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task], 201);
         } catch (Exception $e) {
             return $e;
         }
@@ -57,9 +57,14 @@ class SendTaskRepository implements SendTaskInterface
 
     public function updateSendTask(Request $request, int $send_task_id)
     {
-        $task = SendTask::find($send_task_id);
+        $task = SendTask::select('*')
+        ->where('id', $send_task_id)
+        ->where('user_id', Auth::user()->id)
+        ->where('accept', false)
+        ->where('decline', false)
+        ->first();
         if (!$task) {
-            return response()->json(["message" => "Task mavjud emas!"], 404);
+            return response()->json(["message" => "Task mavjud emas!"], 403);
         }
         $task->update([
             'partner_id' => $request->partner_id,
@@ -79,13 +84,14 @@ class SendTaskRepository implements SendTaskInterface
 
             $send_task = SendTask::select('*')
                 ->where('id', $send_task_id)
+                ->where('partner_id', Auth::user()->id)
                 ->where('accept', false)
                 ->where('decline', false)
                 ->where('partner_id', $auth)
                 ->first();
 
             if (!$send_task) {
-                return response()->json(["message" => "Task mavjud emas!"], 404);
+                return response()->json(["message" => "Task mavjud emas!"], 403);
             }
             $send_task->update([
                 'original_task' => $request->original_task
@@ -138,7 +144,7 @@ class SendTaskRepository implements SendTaskInterface
                 ->where('partner_id', Auth::user()->id)->first();
 
             if (!$send_task) {
-                return response()->json(["message" => "Task mavjud emas!"], 404);
+                return response()->json(["message" => "Task mavjud emas!"], 403);
             }
             $send_task->update([
                 'title' => $request->title
@@ -211,19 +217,20 @@ class SendTaskRepository implements SendTaskInterface
 
         $task = Task::select('*')->where('user_id', $auth)
             ->where('active', true)
+            ->where('status', true)
             ->where('id', $request->task_id)->first();
 
         if (!$task) {
-            return response()->json(["message" => "Task mavjud emas!"], 404);
+            return response()->json(["message" => "Bu taskni yana qayta yubora olmaysiz!"], 403);
         }
 
-        $unique = SendTask::select('*')->where('partner_id', $request->user_id)
-            ->where('last_task_id', $request->task_id)->count();
+        // $unique = SendTask::select('*')->where('partner_id', $request->user_id)
+        //     ->where('last_task_id', $request->task_id)->count();
 
-        if ($unique >= 1) {
-            return response()->json(["message" => "Siz takror jo'natyapsiz!"], 404);
-        }
-      $send_task =  SendTask::create([
+        // if ($unique >= 1) {
+        //     return response()->json(["message" => "Siz takror jo'natyapsiz!"], 403);
+        // }
+        SendTask::create([
             'last_task_id' => $task->id,
             'user_id' => $auth,
             'partner_id' => $request->user_id,
@@ -238,13 +245,16 @@ class SendTaskRepository implements SendTaskInterface
 
             $message = [
                 "hi" => "Sizga yangi task keldi",
-                "task_name" => $send_task->task_name,
-                "description" => $send_task->description,
-                "category_name" => $send_task->category_name,
-                "original_task" => $send_task->original_task,
-                "high" => $send_task->high
+                "task_name" => $task->task_name,
+                "description" => $task->description,
+                "category_name" => $task->category_name,
+                "original_task" => $task->original_task,
+                "high" => $task->high
             ];
             $user->notify(new SendTaskNotification($message));
+
+            $task->status = false;
+            $task->save();
 
         return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
     } catch (Exception $e) {
@@ -265,7 +275,7 @@ class SendTaskRepository implements SendTaskInterface
                 ->first();
 
             if (!$decline_task) {
-                return response()->json(["message" => "Task mavjud emas!"], 404);
+                return response()->json(["message" => "Task mavjud emas!"], 403);
             }
 
             Task::create([
@@ -289,12 +299,13 @@ class SendTaskRepository implements SendTaskInterface
     {
         try {
             $decline_task =  SendTask::select('*')->where('id', $request->decline_task_id)
+            ->where('partner_id', Auth::user()->id)
                 ->where('decline', true)
                 ->where('accept', false)
                 ->first();
 
             if (!$decline_task) {
-                return response()->json(["message" => "Task mavjud emas!"], 404);
+                return response()->json(["message" => "Task mavjud emas!"], 403);
             }
 
             $decline_task->update([

@@ -26,14 +26,19 @@ class TaskRepository implements TaskInterface
             'original_task' => $request->original_task,
             'high' => $request->high
         ]);
-        return response()->json(["message" => "Task muvaffaqqiyatli yaratildi!", "data" => $task]);
+        return response()->json(["message" => "Task muvaffaqqiyatli yaratildi!", "data" => $task], 201);
     }
 
     public function updateTask(Request $request, int $task_id)
     {
-        $task = Task::find($task_id);
+        $task = Task::select('*')->where('id', $task_id)
+        ->where('user_id', Auth::user()->id)
+        ->where('active', true)
+        ->where('status', true)
+        ->first();
+
         if (!$task) {
-            return response()->json(["message" => "Task mavjud emas!"]);
+            return response()->json(["message" => "Taskni tahrirlay olmaysiz!"], 403);
         }
         $task->update([
             'category_name' => $request->category_name,
@@ -42,7 +47,7 @@ class TaskRepository implements TaskInterface
             'original_task' => $request->original_task,
             'high' => $request->high,
         ]);
-        return response()->json(["message" => "Task updated successfully!"]);
+        return response()->json(["message" => "Task updated successfully!"], 200);
     }
 
 
@@ -50,16 +55,21 @@ class TaskRepository implements TaskInterface
     {
         $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
 
-        $task = Task::find($task_id);
+        $task = Task::select('*')->where('id', $task_id)
+        ->where('user_id', Auth::user()->id)
+        ->where('active', true)
+        ->where('status', true)
+        ->first();
+
         if (!$task) {
-            return response()->json(["message" => "Task mavjud emas!"]);
+            return response()->json(["message" => "Taskni tugata olmaysiz!"], 403);
         } else {
             $task->update([
                 'end_task' => $formattedTime,
             ]);
             $task->active = false;
             $task->save();
-            return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task]);
+            return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task], 200);
         }
     }
 
@@ -76,7 +86,7 @@ class TaskRepository implements TaskInterface
                     ->orWhere('task_name', 'like', "%$search%")
                     ->orWhere('username', 'like', "%$search%");
             })
-            ->orderBy('users.id', 'asc')
+            ->orderBy('tasks.id', 'asc')
             ->paginate(15);
         return TaskResource::collection($task);
     }
@@ -89,7 +99,7 @@ class TaskRepository implements TaskInterface
         $continue = request('continue');
         $auth = Auth::user()->id;
 
-        $task = Task::select('tasks.id as task_id', 'tasks.active',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        $task = Task::select('tasks.id as task_id', 'tasks.active', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.user_id', $auth)
             ->when($finish, function ($query) use ($finish) {
