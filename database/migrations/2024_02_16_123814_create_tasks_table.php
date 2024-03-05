@@ -22,7 +22,7 @@ return new class extends Migration
             $table->dateTime('original_task');
             $table->string('high');
             $table->boolean('active')->default(true);
-            $table->boolean('status')->default(true);
+            $table->enum('status', ['enable', 'disable'])->default('enable');
             $table->timestamps();
         });
     }

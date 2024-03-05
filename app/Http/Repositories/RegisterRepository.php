@@ -57,8 +57,8 @@ class RegisterRepository implements RegisterInterface
 
             $secund = $now->getTimestamp() - $create->getTimestamp();
             if ($secund >= 120) {
-                $find = ConfirmCode::find($confirm_code->id);
-                $find->delete();
+                // $find = ConfirmCode::find($confirm_code->id);
+                // $find->delete();
                 return response()->json(["message" => "Kod kiritish vaqti tugagan!"], 401);
             }
 
@@ -127,7 +127,7 @@ class RegisterRepository implements RegisterInterface
                     ->orWhere('email', 'like', "%$search%");
             })
             ->orderBy('users.id', 'asc')
-            ->paginate(5);
+            ->paginate(30);
         return UserResource::collection($user);
     }
 }

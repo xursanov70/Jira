@@ -177,7 +177,7 @@ class SendTaskRepository implements SendTaskInterface
     public function forMeTasks()
     {
 
-        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name', 'category_name', 'description', 'high', 'original_task', 'username', 'send_time')
+        $task = SendTask::select('send_tasks.id as send_task_id', 'task_name',  'category_name', 'description', 'high', 'original_task', 'username', 'send_time')
             ->join('users', 'users.id', '=', 'send_tasks.user_id')
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
@@ -220,19 +220,13 @@ class SendTaskRepository implements SendTaskInterface
 
         $task = Task::select('*')->where('user_id', $auth)
             ->where('active', true)
-            ->where('status', true)
+            ->where('status', 'enable')
             ->where('id', $request->task_id)->first();
 
         if (!$task) {
             return response()->json(["message" => "Yuborilgan taskni yana qayta yubora olmaysiz!"], 403);
         }
 
-        // $unique = SendTask::select('*')->where('partner_id', $request->user_id)
-        //     ->where('last_task_id', $request->task_id)->count();
-
-        // if ($unique >= 1) {
-        //     return response()->json(["message" => "Siz takror jo'natyapsiz!"], 403);
-        // }
         SendTask::create([
             'last_task_id' => $task->id,
             'user_id' => $auth,
@@ -256,7 +250,7 @@ class SendTaskRepository implements SendTaskInterface
             ];
             $user->notify(new SendTaskNotification($message));
 
-            $task->status = false;
+            $task->status = 'disable';
             $task->save();
 
         return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);

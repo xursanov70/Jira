@@ -34,7 +34,7 @@ class TaskRepository implements TaskInterface
         $task = Task::select('*')->where('id', $task_id)
         ->where('user_id', Auth::user()->id)
         ->where('active', true)
-        ->where('status', true)
+        ->where('status', 'enable')
         ->first();
 
         if (!$task) {
@@ -55,10 +55,10 @@ class TaskRepository implements TaskInterface
     {
         $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
 
-       return $task = Task::select('*')->where('id', $task_id)
+        $task = Task::select('*')->where('id', $task_id)
         ->where('user_id', Auth::user()->id)
         ->where('active', true)
-        ->where('status', true)
+        ->where('status', 'enable')
         ->first();
 
         if (!$task) {
@@ -99,7 +99,7 @@ class TaskRepository implements TaskInterface
         $continue = request('continue');
         $auth = Auth::user()->id;
 
-        $task = Task::select('tasks.id as task_id', 'tasks.active', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        $task = Task::select('tasks.id as task_id', 'tasks.active', 'tasks.status', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.user_id', $auth)
             ->when($finish, function ($query) use ($finish) {
@@ -108,6 +108,7 @@ class TaskRepository implements TaskInterface
             })
             ->when($continue, function ($query) use ($continue) {
                 $query->where('category_name', "$continue")
+                ->where('end_task', null)
                     ->where('tasks.active', true);
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
@@ -130,6 +131,7 @@ class TaskRepository implements TaskInterface
             })
             ->when($continue, function ($query) use ($continue) {
                 $query->where('category_name', "$continue")
+                ->where('end_task', null)
                     ->where('tasks.active', true);
             })
             ->when($late, function ($query) use ($late) {
