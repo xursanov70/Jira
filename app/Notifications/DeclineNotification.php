@@ -36,15 +36,14 @@ class DeclineNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line("Assalamu Alaykum. ".$this->message['hi'])
-                    ->line("task nomi: ".$this->message['task_name'])
-                    ->line("task haqida: ".$this->message['description'])
-                    ->line("categoriya nomi: ".$this->message['category_name'])
-                    ->line("task tugash vaqti: ".$this->message['original_task'])
-                    ->line("zarurlik darajasi: ".$this->message['high'])
-                    // ->line($this->message['wish'])
-                    // ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line("Assalamu Alaykum. " . $this->message['hi'])
+            ->line("task nomi: " . $this->message['task_name'])
+            ->line("task haqida: " . $this->message['description'])
+            ->line("categoriya nomi: " . $this->message['category_name'])
+            ->line("task tugash vaqti: " . $this->message['original_task'])
+            ->line("zarurlik darajasi: " . $this->message['high'])
+            ->line("bekor qilinganlik sababi: " . $this->message['title'])
+            ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
     }
 
     /**

@@ -12,6 +12,8 @@ use App\Http\Requests\ShareTaskRequest;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\AcceptNotification;
+use App\Notifications\DeclineNotification;
 use App\Notifications\SendTaskNotification;
 use Exception;
 use Illuminate\Http\Request;
@@ -107,7 +109,7 @@ class SendTaskRepository implements SendTaskInterface
                 "original_task" => $send_task->original_task,
                 "high" => $send_task->high
             ];
-            $user->notify(new SendTaskNotification($message));
+            $user->notify(new AcceptNotification($message));
 
             $send_task->accept = true;
             $send_task->save();
@@ -158,9 +160,10 @@ class SendTaskRepository implements SendTaskInterface
                 "description" => $send_task->description,
                 "category_name" => $send_task->category_name,
                 "original_task" => $send_task->original_task,
-                "high" => $send_task->high
+                "high" => $send_task->high,
+                "title" => $send_task->title,
             ];
-            $user->notify(new SendTaskNotification($message));
+            $user->notify(new DeclineNotification($message));
 
             $send_task->decline = true;
             $send_task->save();
@@ -221,7 +224,7 @@ class SendTaskRepository implements SendTaskInterface
             ->where('id', $request->task_id)->first();
 
         if (!$task) {
-            return response()->json(["message" => "Bu taskni yana qayta yubora olmaysiz!"], 403);
+            return response()->json(["message" => "Yuborilgan taskni yana qayta yubora olmaysiz!"], 403);
         }
 
         // $unique = SendTask::select('*')->where('partner_id', $request->user_id)
@@ -299,7 +302,7 @@ class SendTaskRepository implements SendTaskInterface
     {
         try {
             $decline_task =  SendTask::select('*')->where('id', $request->decline_task_id)
-            ->where('partner_id', Auth::user()->id)
+            ->where('user_id', Auth::user()->id)
                 ->where('decline', true)
                 ->where('accept', false)
                 ->first();

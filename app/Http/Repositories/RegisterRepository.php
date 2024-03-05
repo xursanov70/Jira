@@ -127,7 +127,7 @@ class RegisterRepository implements RegisterInterface
                     ->orWhere('email', 'like', "%$search%");
             })
             ->orderBy('users.id', 'asc')
-            ->paginate(15);
+            ->paginate(5);
         return UserResource::collection($user);
     }
 }

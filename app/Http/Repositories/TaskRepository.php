@@ -38,7 +38,7 @@ class TaskRepository implements TaskInterface
         ->first();
 
         if (!$task) {
-            return response()->json(["message" => "Taskni tahrirlay olmaysiz!"], 403);
+            return response()->json(["message" => "Yuborilgan taskni tahrirlay olmaysiz!"], 403);
         }
         $task->update([
             'category_name' => $request->category_name,
@@ -55,14 +55,14 @@ class TaskRepository implements TaskInterface
     {
         $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
 
-        $task = Task::select('*')->where('id', $task_id)
+       return $task = Task::select('*')->where('id', $task_id)
         ->where('user_id', Auth::user()->id)
         ->where('active', true)
         ->where('status', true)
         ->first();
 
         if (!$task) {
-            return response()->json(["message" => "Taskni tugata olmaysiz!"], 403);
+            return response()->json(["message" => "Yuborilgan taskni tugata olmaysiz!"], 403);
         } else {
             $task->update([
                 'end_task' => $formattedTime,
@@ -118,11 +118,6 @@ class TaskRepository implements TaskInterface
 
     public function admin()
     {
-        // $user = User::select('*')->where('id', Auth::user()->id)->first();
-        // if ($user->status == 'developer'){
-        //     return response()->json(["message" => "Sizda bunday huquq yo'q!"], 403);
-        // }
-
         $finish = request('finish');
         $continue = request('continue');
         $late = request('late');
@@ -139,8 +134,8 @@ class TaskRepository implements TaskInterface
             })
             ->when($late, function ($query) use ($late) {
                 $query->where('category_name', "$late")
-                    ->where('original_task', '<', now())
-                    ->where('tasks.active', true);
+                ->where('tasks.active', true)
+                    ->where('original_task', '<', now());
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
