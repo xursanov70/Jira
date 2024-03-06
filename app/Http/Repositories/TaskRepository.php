@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use App\Models\User;
@@ -29,7 +30,7 @@ class TaskRepository implements TaskInterface
         return response()->json(["message" => "Task muvaffaqqiyatli yaratildi!", "data" => $task], 201);
     }
 
-    public function updateTask(Request $request, int $task_id)
+    public function updateTask(UpdateTaskRequest $request, int $task_id)
     {
         $task = Task::select('*')->where('id', $task_id)
             ->where('user_id', Auth::user()->id)
@@ -47,7 +48,7 @@ class TaskRepository implements TaskInterface
             'original_task' => $request->original_task,
             'high' => $request->high,
         ]);
-        return response()->json(["message" => "Task updated successfully!"], 200);
+        return response()->json(["message" => "Task muvaffaqqiyatli o'zgartirildi!"], 200);
     }
 
 
@@ -65,7 +66,7 @@ class TaskRepository implements TaskInterface
             return response()->json(["message" => "Yuborilgan taskni tugata olmaysiz!"], 403);
         } else {
             $task->update([
-                'end_task' => $formattedTime,
+                'end_task' => $formattedTime
             ]);
             $task->active = false;
             $task->save();
@@ -112,9 +113,9 @@ class TaskRepository implements TaskInterface
                     ->where('end_task', null)
                     ->where('tasks.active', true);
             })
-            ->when($late!== null, function ($query) use ($late) {
-                $query->where('tasks.active', "$late")
-                    ->where('end_task', null)
+            ->when($late, function ($query) use ($late) {
+                $query->where('category_name', "$late")
+                    ->where('tasks.active', true)
                     ->where('original_task', '<', now());
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")

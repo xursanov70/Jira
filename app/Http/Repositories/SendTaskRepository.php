@@ -19,7 +19,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use function Symfony\Component\String\b;
 
 class SendTaskRepository implements SendTaskInterface
 {
@@ -60,11 +59,11 @@ class SendTaskRepository implements SendTaskInterface
     public function updateSendTask(Request $request, int $send_task_id)
     {
         $task = SendTask::select('*')
-        ->where('id', $send_task_id)
-        ->where('user_id', Auth::user()->id)
-        ->where('accept', false)
-        ->where('decline', false)
-        ->first();
+            ->where('id', $send_task_id)
+            ->where('user_id', Auth::user()->id)
+            ->where('accept', false)
+            ->where('decline', false)
+            ->first();
         if (!$task) {
             return response()->json(["message" => "Task mavjud emas!"], 403);
         }
@@ -165,8 +164,8 @@ class SendTaskRepository implements SendTaskInterface
                 "title" => $send_task->title,
             ];
             $user->notify(new DeclineNotification($message));
-            $task_status = Task::select('*')->where('id', $send_task->last_task_id)->first(); 
-            if ($task_status){
+            $task_status = Task::select('*')->where('id', $send_task->last_task_id)->first();
+            if ($task_status) {
                 $task_status->status = 'enable';
                 $task_status->save();
             }
@@ -225,32 +224,32 @@ class SendTaskRepository implements SendTaskInterface
 
     public function shareTask(ShareTaskRequest $request)
     {
-        try{
+        try {
 
-        $auth = Auth::user()->id;
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+            $auth = Auth::user()->id;
+            $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
 
-        $task = Task::select('*')->where('user_id', $auth)
-            ->where('active', true)
-            ->where('status', 'enable')
-            ->where('id', $request->task_id)->first();
+            $task = Task::select('*')->where('user_id', $auth)
+                ->where('active', true)
+                ->where('status', 'enable')
+                ->where('id', $request->task_id)->first();
 
-        if (!$task) {
-            return response()->json(["message" => "Yuborilgan taskni yana qayta yubora olmaysiz!"], 403);
-        }
+            if (!$task) {
+                return response()->json(["message" => "Yuborilgan taskni yana qayta yubora olmaysiz!"], 403);
+            }
 
-        SendTask::create([
-            'last_task_id' => $task->id,
-            'user_id' => $auth,
-            'partner_id' => $request->user_id,
-            'task_name' => $task->task_name,
-            'description' => $task->description,
-            'category_name' => $task->category_name,
-            'original_task' => $task->original_task,
-            'high' => $task->high,
-            'send_time' => $formattedTime
-        ]);
-        $user = User::find($request->user_id);
+            SendTask::create([
+                'last_task_id' => $task->id,
+                'user_id' => $auth,
+                'partner_id' => $request->user_id,
+                'task_name' => $task->task_name,
+                'description' => $task->description,
+                'category_name' => $task->category_name,
+                'original_task' => $task->original_task,
+                'high' => $task->high,
+                'send_time' => $formattedTime
+            ]);
+            $user = User::find($request->user_id);
 
             $message = [
                 "hi" => "Sizga yangi task keldi",
@@ -265,10 +264,10 @@ class SendTaskRepository implements SendTaskInterface
             $task->status = 'disable';
             $task->save();
 
-        return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
-    } catch (Exception $e) {
-        return $e;
-    }
+            return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
+        } catch (Exception $e) {
+            return $e;
+        }
     }
 
     public function addMyTask(AddMyTaskRequest $request)
@@ -308,7 +307,7 @@ class SendTaskRepository implements SendTaskInterface
     {
         try {
             $decline_task =  SendTask::select('*')->where('id', $request->decline_task_id)
-            ->where('user_id', Auth::user()->id)
+                ->where('user_id', Auth::user()->id)
                 ->where('decline', true)
                 ->where('accept', false)
                 ->first();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Http\Request;
 
 
@@ -18,7 +19,7 @@ class TaskController extends Controller
         return $this->taskInterface->createTask($request);
     }
 
-    function updateTask(Request $request, int $task_id)
+    function updateTask(UpdateTaskRequest $request, int $task_id)
     {
         return $this->taskInterface->updateTask($request, $task_id);
     }
