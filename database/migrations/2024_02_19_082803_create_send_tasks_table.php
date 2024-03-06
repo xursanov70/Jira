@@ -21,6 +21,7 @@ return new class extends Migration
             $table->dateTime('original_task');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('partner_id')->constrained('users');
+            $table->dateTime('send_time');
             $table->boolean('accept')->default(false);
             $table->boolean('decline')->default(false);
             $table->integer('last_task_id')->nullable();

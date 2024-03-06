@@ -22,15 +22,16 @@ class ConfirmCodeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "code" => "required",
+            "code" => "required|max:5|min:5",
         ];
     }
 
     public function messages()
     {
         return [
-            "code.required" => "code kiriting",
-            
+            "code.required" => "kod kiriting",
+            "code.max" => "kod berilgan miqdordan ko'p kiritildi",
+            "code.min" => "kod berilgan miqdordan kam kiritildi",    
         ];
     }
 }

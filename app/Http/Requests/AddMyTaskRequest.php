@@ -29,7 +29,7 @@ class AddMyTaskRequest extends FormRequest
     public function messages()
     {
         return [
-            "send_decline_task_id.required" => "send_decline_task_id kiriting",
+            "send_decline_task_id.required" => "qabul qilinmagan task id raqamini kiriting",
             
         ];
     }

@@ -30,8 +30,8 @@ class SendDeclineTaskRequest extends FormRequest
     public function messages()
     {
         return [
-            "decline_task_id.required" => "decline_task_id kiriting",
-            "partner_id.required" => "partner_id kiriting",
+            "decline_task_id.required" => "qabul qilinmagan task id raqamini kiriting",
+            "partner_id.required" => "yuborayotgan sherigingizni id raqamini kiriting",
             
         ];
     }

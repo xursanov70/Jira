@@ -124,7 +124,8 @@ class SendTaskRepository implements SendTaskInterface
                 'original_task' => $send_task->original_task,
                 'high' => $send_task->high,
             ]);
-            $task = Task::find($send_task->last_task_id);
+
+            $task = Task::select('*')->where('id', $send_task->last_task_id)->first();
             if ($task) {
                 $task->delete();
             }
@@ -164,6 +165,17 @@ class SendTaskRepository implements SendTaskInterface
                 "title" => $send_task->title,
             ];
             $user->notify(new DeclineNotification($message));
+            $task_status = Task::select('*')->where('id', $send_task->last_task_id)->first(); 
+            if ($task_status){
+                $task_status->status = 'enable';
+                $task_status->save();
+            }
+
+            $task = Task::select('*')->where('id', $send_task->last_task_id)->first();
+            if ($task) {
+                $task->status = 'enable';
+                $task->save();
+            }
 
             $send_task->decline = true;
             $send_task->save();

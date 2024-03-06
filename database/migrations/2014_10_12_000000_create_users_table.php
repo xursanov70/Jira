@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->unique();
             $table->boolean('active')->default(true);
+            $table->enum('status', ['user', 'admin'])->default('user');
             $table->timestamps();
         });
     }

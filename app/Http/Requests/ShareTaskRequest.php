@@ -39,8 +39,8 @@ class ShareTaskRequest extends FormRequest
     public function messages()
     {
         return [
-            "task_id.required" => "task_id kiriting",
-            "user_id.required" => "user_id kiriting",
+            "task_id.required" => "Taskingiz id raqamini kiriting",
+            "partner_id.required" => "yuborayotgan sherigingizni id raqamini kiriting",
 
         ];
     }

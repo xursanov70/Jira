@@ -22,12 +22,11 @@ class TaskRequest extends FormRequest
     public function rules()
     {
         return [
-            "category_name" => "required",
             "category_name" => "required|in:Official,Personal",
             'original_task' => 'required|date|after_or_equal:' . now('Asia/Tashkent')->format('Y-m-d') . '|before:2050-01-01 00:00:00',
             'high' =>  'required|in:High,Medium,Low',
-            "description" => "required",
-            "task_name" => "required",
+            "description" => "required|max:255",
+            "task_name" => "required|max:50",
         ];
     }
 
@@ -43,7 +42,9 @@ class TaskRequest extends FormRequest
             "high.required" => "high kiritng",
             "high.in" => "Zarurlik darajasini to'g'ri kiriting",
             "task_name.required" => "Task nomini kiritng",
+            "task_name.max" => "task nomi  haddan ziyod ko'p kiritildi",
             "description.required" => "task haqida ma'lumot kiritng",
+            "description.max" => "task haqida ma'lumot haddan ziyod ko'p kiritildi",
         ];
     }
 }

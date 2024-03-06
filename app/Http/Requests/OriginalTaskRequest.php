@@ -22,7 +22,7 @@ class OriginalTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "original_task" => "required",
+            "original_task" => "required|date",
         ];
     }
 
@@ -30,6 +30,7 @@ class OriginalTaskRequest extends FormRequest
     {
         return [
             "original_task.required" => "tugash vaqti kiriting",
+            "original_task.date" => "Task vaqtini to'g'ri kiritng",
             
         ];
     }
