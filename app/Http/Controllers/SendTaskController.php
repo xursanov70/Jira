@@ -22,7 +22,7 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->createSendTask($request);
     }
 
-    public function updateSendTask(Request $request, int $send_task_id)
+    public function updateSendTask(SendTaskRequest $request, int $send_task_id)
     {
         return $this->sendTaskInterface->updateSendTask($request, $send_task_id);
     }

@@ -56,7 +56,7 @@ class SendTaskRepository implements SendTaskInterface
         }
     }
 
-    public function updateSendTask(Request $request, int $send_task_id)
+    public function updateSendTask(SendTaskRequest $request, int $send_task_id)
     {
         $task = SendTask::select('*')
             ->where('id', $send_task_id)
