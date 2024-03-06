@@ -22,7 +22,7 @@ class ConfirmCodeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "code" => "required|max:5|min:5",
+            "code" => "required|max:5|min:5|integer",
         ];
     }
 
@@ -30,6 +30,7 @@ class ConfirmCodeRequest extends FormRequest
     {
         return [
             "code.required" => "kod kiriting",
+            "code.integer" => "raqam  kiriting",
             "code.max" => "kod berilgan miqdordan ko'p kiritildi",
             "code.min" => "kod berilgan miqdordan kam kiritildi",    
         ];

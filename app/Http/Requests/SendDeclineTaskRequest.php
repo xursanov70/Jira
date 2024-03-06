@@ -22,8 +22,8 @@ class SendDeclineTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "decline_task_id" => "required",
-            "partner_id" => "required",
+            "decline_task_id" => "required|integer",
+            "partner_id" => "required|integer",
         ];
     }
 
@@ -31,6 +31,8 @@ class SendDeclineTaskRequest extends FormRequest
     {
         return [
             "decline_task_id.required" => "qabul qilinmagan task id raqamini kiriting",
+            "decline_task_id.integer" => "rad etilgan taskni id  raqamini to'gri  kiriting",
+            "partner_id.integer" => "sherigingizni  id  raqamini to'gri  kiriting",
             "partner_id.required" => "yuborayotgan sherigingizni id raqamini kiriting",
             
         ];

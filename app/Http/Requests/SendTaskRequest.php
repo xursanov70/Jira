@@ -22,7 +22,7 @@ class SendTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            "partner_id" => "required",
+            "partner_id" => "required|integer",
             "category_name" => "required|in:Official,Personal",
             'original_task' => 'required|date|after_or_equal:' . now('Asia/Tashkent')->format('Y-m-d') . '|before:2050-01-01 00:00:00',
             'high' => 'required|in:High,Medium,Low',
@@ -37,6 +37,7 @@ class SendTaskRequest extends FormRequest
             "category_name.required" => "category nomini kiritng",
             "category_name.in" => "category nomini to'g'ri kiritng",
             "partner_id.required" => "kim uchunligini  kiritng",
+            "partner_id.integer" => "sherigingizni  id  raqamini to'gri  kiriting",
             "original_task.required" => "task uchun vaqt belgilang",
             "original_task.after_or_equal" => "Kiritilgan original task vaqti hozirgi vaqtdan oldin bo'lmasligi kerak",
             "original_task.date" => "Task vaqtini to'g'ri kiritng",

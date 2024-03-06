@@ -22,7 +22,7 @@ class AddMyTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "send_decline_task_id" => "required",
+            "send_decline_task_id" => "required|integer",
         ];
     }
 
@@ -30,6 +30,7 @@ class AddMyTaskRequest extends FormRequest
     {
         return [
             "send_decline_task_id.required" => "qabul qilinmagan task id raqamini kiriting",
+            "send_decline_task_id.integer" => "raqam  kiriting",
             
         ];
     }

@@ -40,6 +40,8 @@ class ShareTaskRequest extends FormRequest
     {
         return [
             "task_id.required" => "Taskingiz id raqamini kiriting",
+            "partner_id.string" => "taskingizni  id  raqamini to'gri  kiriting",
+            "partner_id.string" => "sherigingizni  id  raqamini to'gri  kiriting",
             "partner_id.required" => "yuborayotgan sherigingizni id raqamini kiriting",
 
         ];
