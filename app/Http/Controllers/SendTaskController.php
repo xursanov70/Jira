@@ -48,15 +48,4 @@ class SendTaskController extends Controller
         return $this->sendTaskInterface->mySendTasks();
     }
 
-    public function shareTask(ShareTaskRequest $request){
-        return $this->sendTaskInterface->shareTask($request);
-    }
-
-    public function sendDeclineTAsk(SendDeclineTaskRequest $request){
-        return $this->sendTaskInterface->sendDeclineTAsk($request);
-    }
-
-    public function addMyTask(AddMyTaskRequest $request){
-        return $this->sendTaskInterface->addMyTask($request);
-    }
 }

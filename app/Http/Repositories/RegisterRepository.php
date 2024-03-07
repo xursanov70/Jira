@@ -24,11 +24,6 @@ class RegisterRepository implements RegisterInterface
     public function sendEmail(SendEmailRequest $request)
     {
         try {
-
-            $user = User::select('*')->where('email', $request->email)->first();
-            if ($user) {
-                return response()->json(["message" => "Siz oldin kiritilgan email address kiritdingiz!"], 401);
-            }
             $rand = rand(10000, 99999);
             Mail::to($request->email)->send(new Message($rand));
 
@@ -46,22 +41,21 @@ class RegisterRepository implements RegisterInterface
 
     public function confirmCode(ConfirmCodeRequest $request)
     {
-        $confirm_code = ConfirmCode::select('*')->where('email', $request->email)->orderBy('id', 'desc')->first();
+        $confirm_code = ConfirmCode::select('*')->where('email', $request->email)
+            ->orderBy('id', 'desc')->first();
 
         if (!$confirm_code) {
             return response()->json(["message" => "Noto'g'ri ma'lumot kiritdingiz!"], 401);
         }
         if ($confirm_code->code == $request->code) {
+
             $create = new DateTime(Carbon::parse($confirm_code->created_at));
             $now = new DateTime(Carbon::now());
-
             $secund = $now->getTimestamp() - $create->getTimestamp();
+
             if ($secund >= 120) {
-                // $find = ConfirmCode::find($confirm_code->id);
-                // $find->delete();
                 return response()->json(["message" => "Kod kiritish vaqti tugagan!"], 401);
             }
-
             $find = ConfirmCode::find($confirm_code->id);
             $find->delete();
             return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!"], 200);

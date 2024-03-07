@@ -7,8 +7,6 @@ use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskInterface
@@ -151,4 +149,5 @@ class TaskRepository implements TaskInterface
             ->paginate(15);
         return $task;
     }
+
 }

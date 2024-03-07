@@ -22,7 +22,7 @@ class SendEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => "required|max:50",
+            "email" => "required|max:50|unique:users,email,except,id",
         ];
     }
 
@@ -30,7 +30,8 @@ class SendEmailRequest extends FormRequest
     {
         return [
             "email.required" => "email kiriting",
-            "email.max" => "email haddan ziyod ko'p kiritildi",
+            "email.unique" => "Siz oldin kiritilgan email address kiritdingiz",
+            "email.max" => "email belgilangan miqdordan ko'p kiritildi",
             
         ];
     }

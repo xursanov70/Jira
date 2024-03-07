@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
             "username" => "required|max:20|regex:/^[A-Za-z0-9\-_]+$/|unique:users,username,except,id",
             "password" => "required|min:6",
             "fullname" => "required|max:30",
-            "phone" => "required|max:17|min:17|unique:users,phone,except,id",
+            "phone" => "required|size:17|unique:users,phone,except,id",
         ];
     }
 
@@ -46,8 +46,7 @@ class RegisterRequest extends FormRequest
 
             "phone.required" => "telefon raqam kiriting",
             "phone.unique" => "bu raqam oldin kiritilgan",
-            "phone.max" => "telefon raqamni to'liq kiriting",
-            "phone.min" => "telefon raqamni to'liq kiriting",
+            "phone.size" => "telefon raqamni to'liq kiriting",
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
+use App\Http\Requests\ShareTaskRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Http\Request;
@@ -46,5 +47,4 @@ class TaskController extends Controller
 
         return $this->taskInterface->admin();
     }
-
 }

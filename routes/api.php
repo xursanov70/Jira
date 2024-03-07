@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SendMyTaskController;
 use App\Http\Controllers\SendTaskController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
@@ -62,9 +63,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('decline/for/my/task/{send_task_id}', [SendTaskController::class, 'declineForMyTask']);  //qabul qmaslik
     Route::get('for/me/tasks', [SendTaskController::class, 'forMeTasks']);  //menga kegan tasklar
     Route::get('my/sand/tasks', [SendTaskController::class, 'mySendTasks']);  //men jonatgan tasklar
-
-    Route::post('share/task', [SendTaskController::class, 'shareTask']);  //mavjud taskni jonatiw
-    Route::post('send/decline/task', [SendTaskController::class, 'sendDeclineTAsk']);  //decline taskni bowqaga jonatw
-    Route::post('add/my/task', [SendTaskController::class, 'addMyTask']);  //decline taskni oziga qoshish
-
+    
+    Route::post('send/decline/task', [SendMyTaskController::class, 'sendDeclineTAsk']);  //decline taskni bowqaga jonatw
+    Route::post('share/task', [SendMyTaskController::class, 'shareTask']);  //mavjud taskni jonatiw
+    Route::post('add/my/task', [SendMyTaskController::class, 'addMyTask']);  //decline taskni oziga qoshish
 });
