@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SendMyTaskController;
 use App\Http\Controllers\SendTaskController;
@@ -38,8 +36,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
     Route::get('user/search', [RegisterController::class, 'searchUser']);
-    
-    
     
     Route::post('create/task', [TaskController::class, 'createTask']);
     Route::post('update/task/{task_id}', [TaskController::class, 'updateTask']);

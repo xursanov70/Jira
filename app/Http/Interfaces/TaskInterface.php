@@ -2,10 +2,8 @@
 
 namespace App\Http\Interfaces;
 
-use App\Http\Requests\ShareTaskRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
-use Illuminate\Http\Request;
 
 interface TaskInterface
 {

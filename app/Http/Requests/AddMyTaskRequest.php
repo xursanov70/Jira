@@ -31,7 +31,7 @@ class AddMyTaskRequest extends FormRequest
         return [
             "send_decline_task_id.required" => "qabul qilinmagan task id raqamini kiriting",
             "send_decline_task_id.integer" => "raqam  kiriting",
-            
+
         ];
     }
 }
