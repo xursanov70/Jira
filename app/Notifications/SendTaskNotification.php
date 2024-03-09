@@ -27,7 +27,7 @@ class SendTaskNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail'  ];
     }
 
     /**
@@ -36,7 +36,7 @@ class SendTaskNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line("Assalamu Alaykum. " . $this->message['hi'])
+            ->line("Assalamu Alaykum. Sizga yangi task keldi" )
             ->line("task nomi: " . $this->message['task_name'])
             ->line("task haqida: " . $this->message['description'])
             ->line("categoriya nomi: " . $this->message['category_name'])

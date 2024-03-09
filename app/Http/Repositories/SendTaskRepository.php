@@ -21,8 +21,9 @@ class SendTaskRepository implements SendTaskInterface
         try {
             $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
             $partner = $request->partner_id;
+            $user = User::find($partner);
 
-            $task = SendTask::create([
+            $message = SendTask::create([
                 'user_id' => Auth::user()->id,
                 'partner_id' => $partner,
                 'task_name' => $request->task_name,
@@ -32,19 +33,9 @@ class SendTaskRepository implements SendTaskInterface
                 'high' => $request->high,
                 'send_time' => $formattedTime
             ]);
-            $user = User::find($partner);
-
-            $message = [
-                "hi" => "Sizga yangi task keldi",
-                "task_name" => $request->task_name,
-                "description" => $request->description,
-                "category_name" => $request->category_name,
-                "original_task" => $request->original_task,
-                "high" => $request->high
-            ];
             $user->notify(new SendTaskNotification($message));
 
-            return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $task], 201);
+            return response()->json(["message" => "Taklifingiz partner tomonidan ko'rib chiqiladi!", "data" => $message], 201);
         } catch (Exception $e) {
             return $e;
         }
@@ -77,7 +68,8 @@ class SendTaskRepository implements SendTaskInterface
             $auth = Auth::user()->id;
 
             $send_task = SendTask::select('*')
-                ->where('id', $send_task_id)->where('accept', false)
+                ->where('id', $send_task_id)
+                ->where('accept', false)
                 ->where('decline', false)
                 ->where('partner_id', $auth)->first();
 
@@ -88,23 +80,12 @@ class SendTaskRepository implements SendTaskInterface
                 'original_task' => $request->original_task
             ]);
 
-            $user = User::find($send_task->user_id);
-
-            $message = [
-                "hi" => "Yuborilgan taskingiz partner tomonidan qabul qilindi",
-                "task_name" => $send_task->task_name,
-                "description" => $send_task->description,
-                "category_name" => $send_task->category_name,
-                "original_task" => $send_task->original_task,
-                "high" => $send_task->high
-            ];
-            $user->notify(new AcceptNotification($message));
-
             $send_task->accept = true;
             $send_task->save();
+            $user = User::find($send_task->user_id);
 
             $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
-            $return = Task::create([
+            $message = Task::create([
                 'user_id' => $auth,
                 'task_name' => $send_task->task_name,
                 'description' => $send_task->description,
@@ -112,14 +93,16 @@ class SendTaskRepository implements SendTaskInterface
                 'start_task' => $formattedTime,
                 'original_task' => $send_task->original_task,
                 'high' => $send_task->high,
+                'real_user' => $send_task->user_id,
             ]);
+            $user->notify(new AcceptNotification($message));
 
             $task = Task::select('*')->where('id', $send_task->last_task_id)->first();
             if ($task) {
                 $task->delete();
             }
 
-            return response()->json(["message" => "Taskni qabul qildingiz!", "data" => $return], 200);
+            return response()->json(["message" => "Taskni qabul qildingiz!", "data" => $message], 200);
         } catch (Exception $e) {
             return $e;
         }

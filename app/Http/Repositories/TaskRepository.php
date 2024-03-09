@@ -7,6 +7,8 @@ use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\EndTaskNotification;
 use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskInterface
@@ -66,14 +68,25 @@ class TaskRepository implements TaskInterface
             $task->update([
                 'end_task' => $formattedTime
             ]);
+
+            $user = User::select('*')->where('id', $task->real_user)->where('active', true)->first();
+            if ($user) {
+                $message = [
+                    "task_name" => $task->task_name,
+                    "description" => $task->description,
+                    "category_name" => $task->category_name,
+                    "original_task" => $task->original_task,
+                    "high" => $task->high,
+                ];
+                $user->notify(new EndTaskNotification($message));
+            }
             $task->active = false;
             $task->save();
             return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task], 200);
         }
     }
 
-
-
+    
     public function searchTask()
     {
         $search = request('search');
@@ -112,8 +125,7 @@ class TaskRepository implements TaskInterface
                     ->where('tasks.active', true);
             })
             ->when($late, function ($query) use ($late) {
-                $query->where('category_name', "$late")
-                    ->where('tasks.active', true)
+                $query->where('tasks.active', "$late")
                     ->where('original_task', '<', now());
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
@@ -149,5 +161,4 @@ class TaskRepository implements TaskInterface
             ->paginate(15);
         return $task;
     }
-
 }

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AcceptNotification extends Notification
+class EndTaskNotification extends Notification
 {
     use Queueable;
 
@@ -29,7 +29,6 @@ class AcceptNotification extends Notification
     {
         return ['mail'];
     }
-    
 
     /**
      * Get the mail representation of the notification.
@@ -37,13 +36,13 @@ class AcceptNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line("Assalamu Alaykum. Yuborilgan taskingiz partner tomonidan qabul qilindi")
-            ->line("task nomi: " . $this->message['task_name'])
-            ->line("task haqida: " . $this->message['description'])
-            ->line("categoriya nomi: " . $this->message['category_name'])
-            ->line("task tugash vaqti: " . $this->message['original_task'])
-            ->line("zarurlik darajasi: " . $this->message['high'])
-            ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
+        ->line("Assalamu Alaykum. Yuborilgan taskingiz partner tomonidan tugatildi")
+        ->line("task nomi: " . $this->message['task_name'])
+        ->line("task haqida: " . $this->message['description'])
+        ->line("categoriya nomi: " . $this->message['category_name'])
+        ->line("task tugash vaqti: " . $this->message['original_task'])
+        ->line("zarurlik darajasi: " . $this->message['high'])
+        ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
     }
 
     /**

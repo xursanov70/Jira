@@ -2,6 +2,7 @@
 
 namespace App\Http\Repositories;
 
+use App\Events\Register;
 use App\Http\Interfaces\RegisterInterface;
 use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\RegisterRequest;
@@ -73,6 +74,7 @@ class RegisterRepository implements RegisterInterface
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
+
         $token = $user->createToken('auth-token')->plainTextToken;
         return response()->json(["message" => "Ro'yxatdan muvaffaqqiyatli o'tdingiz!", "token" => $token], 200);
     }

@@ -103,7 +103,7 @@ class SendMyTaskRepository implements SendMyTaskInterface{
                 return response()->json(["message" => "Yuborilgan taskni yana qayta yubora olmaysiz!"], 403);
             }
 
-            SendTask::create([
+          $message =  SendTask::create([
                 'last_task_id' => $task->id,
                 'user_id' => $auth,
                 'partner_id' => $request_user_id,
@@ -115,15 +115,6 @@ class SendMyTaskRepository implements SendMyTaskInterface{
                 'send_time' => $formattedTime
             ]);
             $user = User::find($request_user_id);
-
-            $message = [
-                "hi" => "Sizga yangi task keldi",
-                "task_name" => $task->task_name,
-                "description" => $task->description,
-                "category_name" => $task->category_name,
-                "original_task" => $task->original_task,
-                "high" => $task->high
-            ];
             $user->notify(new SendTaskNotification($message));
 
             $task->status = 'disable';
