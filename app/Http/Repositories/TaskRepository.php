@@ -86,7 +86,7 @@ class TaskRepository implements TaskInterface
         }
     }
 
-    
+
     public function searchTask()
     {
         $search = request('search');
@@ -125,7 +125,9 @@ class TaskRepository implements TaskInterface
                     ->where('tasks.active', true);
             })
             ->when($late, function ($query) use ($late) {
-                $query->where('tasks.active', "$late")
+                $query->where('category_name', "$late")
+                    ->where('end_task', null)
+                    ->where('tasks.active', true)
                     ->where('original_task', '<', now());
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")

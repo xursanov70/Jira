@@ -14,7 +14,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 
 
-class SendMyTaskRepository implements SendMyTaskInterface{
+class SendMyTaskRepository implements SendMyTaskInterface
+{
 
     public function sendDeclineTAsk(SendDeclineTaskRequest $request)
     {
@@ -37,7 +38,7 @@ class SendMyTaskRepository implements SendMyTaskInterface{
             ]);
             $decline_task->decline = false;
             $decline_task->save();
-            $user = User::find($request_partner_id);
+            $user = User::select('*')->where('id', $request_partner_id)->where('active', true)->first();
 
             $message = [
                 "hi" => "Sizga yangi task keldi",
@@ -103,7 +104,7 @@ class SendMyTaskRepository implements SendMyTaskInterface{
                 return response()->json(["message" => "Yuborilgan taskni yana qayta yubora olmaysiz!"], 403);
             }
 
-          $message =  SendTask::create([
+            $message =  SendTask::create([
                 'last_task_id' => $task->id,
                 'user_id' => $auth,
                 'partner_id' => $request_user_id,
@@ -115,6 +116,7 @@ class SendMyTaskRepository implements SendMyTaskInterface{
                 'send_time' => $formattedTime
             ]);
             $user = User::find($request_user_id);
+            $user = User::select('*')->where('id', $request_user_id)->where('active', true)->first();
             $user->notify(new SendTaskNotification($message));
 
             $task->status = 'disable';

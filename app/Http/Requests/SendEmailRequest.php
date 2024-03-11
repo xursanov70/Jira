@@ -31,8 +31,7 @@ class SendEmailRequest extends FormRequest
         return [
             "email.required" => "email kiriting",
             "email.unique" => "Siz oldin kiritilgan email address kiritdingiz",
-            "email.max" => "email belgilangan miqdordan ko'p kiritildi",
-            
+            "email.max" => "email belgilangan miqdordan ko'p kiritildi",   
         ];
     }
 }

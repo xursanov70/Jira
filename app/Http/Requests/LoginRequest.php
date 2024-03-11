@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "username" => "required|max:30|min:3|regex:/^[A-Za-z0-9\-_]+$/|unique:users,username,except,id",
+            "username" => "required|max:30|min:3|regex:/^[A-Za-z0-9\-_]+$/",
             "password" => "required|min:6|max:30",
-            "fullname" => "required|max:50|min:3",
-            "phone" => "required|string|size:17|unique:users,phone,except,id",
         ];
     }
 
@@ -33,7 +31,6 @@ class RegisterRequest extends FormRequest
     {
         return [
             "username.required" => "username kiritng",
-            "username.unique" => "username oldin kiritilgan",
             "username.max" => "username 30 ta belgidan kam bo'lishi kerak",
             "username.min" => "username 3 ta belgidan kam bo'lmasligi kerak",
             "username.regex" => "yaroqsiz username kiritildi",
@@ -42,14 +39,6 @@ class RegisterRequest extends FormRequest
             "password.required" => "parol kiriting",
             "password.min" => "parol 6 ta belgidan kam bo'lmasligi kerak",
             "password.max" => "parol 30 ta belgidan kam bo'lishi kerak",
-            
-            "fullname.max" => "fullname 50 ta belgidan kam bo'lishi kerak",
-            "fullname.min" => "fullname 3 ta belgidan kam bo'lmasligi kerak",
-            "fullname.required" => "to'liq ismingizni kiriting",
-
-            "phone.required" => "telefon raqam kiriting",
-            "phone.unique" => "bu raqam oldin kiritilgan",
-            "phone.size" => "telefon raqamni to'liq kiriting",
         ];
     }
 }

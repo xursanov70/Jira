@@ -41,7 +41,7 @@ class UpdateSendTaskRequest extends FormRequest
             "original_task.required" => "task uchun vaqt belgilang",
             "original_task.after_or_equal" => "Kiritilgan original task vaqti hozirgi vaqtdan oldin bo'lmasligi kerak",
             "original_task.date" => "Task vaqtini to'g'ri kiritng",
-            "original_task.before" => "Task uchun ko'p vaqt belgiladingiz",
+            "original_task.before" => "Kiritilgan original task vaqti 2050 yildan past  bo'lishligi kerak",
             "high.required" => "high kiritng",
             "high.in" => "Zarurlik darajasini to'g'ri kiriting",
             "task_name.required" => "Task nomini kiritng",

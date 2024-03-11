@@ -14,6 +14,7 @@ use App\Notifications\DeclineNotification;
 use App\Notifications\SendTaskNotification;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+
 class SendTaskRepository implements SendTaskInterface
 {
     public function createSendTask(SendTaskRequest $request)
@@ -21,7 +22,7 @@ class SendTaskRepository implements SendTaskInterface
         try {
             $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
             $partner = $request->partner_id;
-            $user = User::find($partner);
+            $user = User::select('*')->where('id', $partner)->where('active', true)->first();
 
             $message = SendTask::create([
                 'user_id' => Auth::user()->id,
@@ -43,22 +44,31 @@ class SendTaskRepository implements SendTaskInterface
 
     public function updateSendTask(SendTaskRequest $request, int $send_task_id)
     {
-        $task = SendTask::select('*')
+        $message = SendTask::select('*')
             ->where('id', $send_task_id)->where('user_id', Auth::user()->id)
             ->where('accept', false)
             ->where('decline', false)
             ->first();
-        if (!$task) {
-            return response()->json(["message" => "Task mavjud emas!"], 403);
+        if (!$message) {
+            return response()->json(["message" => "Taskni o'zgartira olmaysiz!"], 403);
         }
-        $task->update([
-            'partner_id' => $request->partner_id,
+        $original_partner_id = $message->partner_id;
+        $partner_id = $request->partner_id;
+        
+        $message->update([
+            'partner_id' => $partner_id,
             'task_name' => $request->task_name,
             'description' => $request->description,
             'category_name' => $request->category_name,
             'original_task' => $request->original_task,
             'high' => $request->high,
         ]);
+        if ($original_partner_id != $partner_id) {
+            $user = User::where('id', $partner_id)
+                ->where('active', true)
+                ->first();
+                $user->notify(new SendTaskNotification($message));
+        }
         return response()->json(["message" => "Task o'zgartirildi!"], 200);
     }
 
@@ -82,7 +92,7 @@ class SendTaskRepository implements SendTaskInterface
 
             $send_task->accept = true;
             $send_task->save();
-            $user = User::find($send_task->user_id);
+            $user = User::select('*')->where('id', $send_task->user_id)->where('active', true)->first();
 
             $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
             $message = Task::create([
@@ -125,7 +135,7 @@ class SendTaskRepository implements SendTaskInterface
                 'title' => $request->title
             ]);
 
-            $user = User::find($send_task->user_id);
+            $user = User::select('*')->where('id', $send_task->user_id)->where('active', true)->first();
 
             $message = [
                 "hi" => "Yuborilgan taskingiz partner tomonidan rad qilindi",

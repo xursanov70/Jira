@@ -18,5 +18,5 @@ Route::get('/', function () {
 });
 
 Route::get('pusher', function () {
-    return view('pusher');
+    return view('test');
 });
