@@ -26,6 +26,7 @@ class RegisterRequest extends FormRequest
             "password" => "required|min:6|max:30",
             "fullname" => "required|max:50|min:3",
             "phone" => "required|string|size:17|unique:users,phone,except,id",
+            "email" => "required|max:50",
         ];
     }
 
@@ -50,6 +51,9 @@ class RegisterRequest extends FormRequest
             "phone.required" => "telefon raqam kiriting",
             "phone.unique" => "bu raqam oldin kiritilgan",
             "phone.size" => "telefon raqamni to'liq kiriting",
+
+            "email.required" => "email kiriting",
+            "email.max" => "email belgilangan miqdordan ko'p kiritildi", 
         ];
     }
 }

@@ -57,8 +57,8 @@ class RegisterRepository implements RegisterInterface
             if ($secund >= 120) {
                 return response()->json(["message" => "Kod kiritish vaqti tugagan!"], 401);
             }
-            $find = ConfirmCode::find($confirm_code->id);
-            $find->delete();
+            $confirm_code->active = true;
+            $confirm_code->save();
             return response()->json(["message" => "Siz kiritgan kod tasdiqlandi!"], 200);
         } else {
             return response()->json(["message" => "Noto'g'ri kod kiritdingiz!"], 401);
@@ -67,6 +67,13 @@ class RegisterRepository implements RegisterInterface
 
     public function userRegister(RegisterRequest $request)
     {
+        $code = ConfirmCode::select('*')->where('email', $request->email)
+            ->where('active', true)
+            ->orderBy('id', 'desc')->first();
+
+        if (!$code) {
+            return response()->json(["message" => "Siz kod tasdiqlamagansiz!"], 401);
+        }
         $user =  User::create([
             'fullname' => $request->fullname,
             'username' => $request->username,
@@ -74,6 +81,7 @@ class RegisterRepository implements RegisterInterface
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
+        $code->delete();
         $token = $user->createToken('auth-token')->plainTextToken;
         return response()->json(["message" => "Ro'yxatdan muvaffaqqiyatli o'tdingiz!", "token" => $token], 200);
     }

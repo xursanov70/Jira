@@ -23,6 +23,7 @@ class ConfirmCodeRequest extends FormRequest
     {
         return [
             "code" => "required|string|size:5",
+            "email" => "required|max:50",
         ];
     }
 
@@ -31,7 +32,10 @@ class ConfirmCodeRequest extends FormRequest
         return [
             "code.required" => "kod kiriting",
             "code.string" => "raqam  kiriting",
-            "code.size" => "besh xonali kod kiriting",    
+            "code.size" => "besh xonali kod kiriting",  
+
+            "email.required" => "email kiriting",
+            "email.max" => "email belgilangan miqdordan ko'p kiritildi", 
         ];
     }
 }
