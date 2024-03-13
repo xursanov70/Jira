@@ -23,9 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
-    
+Route::group(['prefix' => 'auth'], function () {
     Route::post('user/login', [RegisterController::class, 'userLogin']);
+    
     Route::post('send/email', [RegisterController::class, 'sendEmail']);
     Route::post('confirm/code', [RegisterController::class, 'confirmCode']);
     Route::post('user/register', [RegisterController::class, 'userRegister']);

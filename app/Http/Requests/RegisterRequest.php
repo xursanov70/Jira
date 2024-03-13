@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
             "username" => "required|max:30|min:3|regex:/^[A-Za-z0-9\-_]+$/|unique:users,username,except,id",
             "password" => "required|min:6|max:30",
             "fullname" => "required|max:50|min:3",
-            "phone" => "required|string|size:17|unique:users,phone,except,id",
+            "phone" => "required|string|size:17|starts_with:+998|unique:users,phone,except,id",
             "email" => "required|max:50",
         ];
     }
@@ -51,9 +51,10 @@ class RegisterRequest extends FormRequest
             "phone.required" => "telefon raqam kiriting",
             "phone.unique" => "bu raqam oldin kiritilgan",
             "phone.size" => "telefon raqamni to'liq kiriting",
+            "phone.starts_with" => "uzbekistanga tegishli telefon raqami kiriting",
 
             "email.required" => "email kiriting",
-            "email.max" => "email belgilangan miqdordan ko'p kiritildi", 
+            "email.max" => "email belgilangan miqdordan ko'p kiritildi",
         ];
     }
 }

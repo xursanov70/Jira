@@ -10,7 +10,6 @@ use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
 use App\Notifications\SendTaskNotification;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -23,7 +22,7 @@ class SendMyTaskRepository implements SendMyTaskInterface
         try {
             $request_partner_id = $request->partner_id;
 
-            $decline_task =  SendTask::select('*')->where('id', $request->decline_task_id)
+            $decline_task =  SendTask::where('id', $request->decline_task_id)
                 ->where('user_id', Auth::user()->id)
                 ->where('decline', true)
                 ->where('accept', false)
@@ -38,7 +37,7 @@ class SendMyTaskRepository implements SendMyTaskInterface
             ]);
             $decline_task->decline = false;
             $decline_task->save();
-            $user = User::select('*')->where('id', $request_partner_id)->where('active', true)->first();
+            $user = User::where('id', $request_partner_id)->where('active', true)->first();
 
             $message = [
                 "hi" => "Sizga yangi task keldi",
@@ -50,8 +49,13 @@ class SendMyTaskRepository implements SendMyTaskInterface
             ];
             $user->notify(new SendTaskNotification($message));
             return response()->json(["message" => "Task muvaffaqqiyatli jo'natildi!"], 200);
-        } catch (Exception $e) {
-            return $e;
+        } catch (\Exception $exception) {
+            return response()->json([
+                "message" => "Rad qilingan task yuborishda xatolik yuz berdi",
+                "error" => $exception->getMessage(),
+                "line" => $exception->getLine(),
+                "file" => $exception->getFile()
+            ]);
         }
     }
 
@@ -59,9 +63,9 @@ class SendMyTaskRepository implements SendMyTaskInterface
     {
         try {
             $auth = Auth::user()->id;
-            $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+            $formattedTime = date('Y-m-d H:i');
 
-            $decline_task = SendTask::select('*')->where('user_id', $auth)
+            $decline_task = SendTask::where('user_id', $auth)
                 ->where('id', $request->send_decline_task_id)
                 ->where('decline', true)
                 ->where('accept', false)
@@ -83,8 +87,13 @@ class SendMyTaskRepository implements SendMyTaskInterface
             $find = SendTask::find($decline_task->id);
             $find->delete();
             return response()->json(["message" => "Tasklaringiz ro'yxatiga muvaffaqqiyatli qo'shildi!"], 200);
-        } catch (Exception $e) {
-            return $e;
+        } catch (\Exception $exception) {
+            return response()->json([
+                "message" => "Task yuklashda xatolik yuz berdi",
+                "error" => $exception->getMessage(),
+                "line" => $exception->getLine(),
+                "file" => $exception->getFile()
+            ]);
         }
     }
 
@@ -93,10 +102,10 @@ class SendMyTaskRepository implements SendMyTaskInterface
         try {
 
             $auth = Auth::user()->id;
-            $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+            $formattedTime = date('Y-m-d H:i');
             $request_user_id = $request->user_id;
 
-            $task = Task::select('*')->where('user_id', $auth)
+            $task = Task::where('user_id', $auth)
                 ->where('active', true)
                 ->where('status', 'enable')
                 ->where('id', $request->task_id)->first();
@@ -116,15 +125,20 @@ class SendMyTaskRepository implements SendMyTaskInterface
                 'send_time' => $formattedTime
             ]);
             $user = User::find($request_user_id);
-            $user = User::select('*')->where('id', $request_user_id)->where('active', true)->first();
+            $user = User::where('id', $request_user_id)->where('active', true)->first();
             $user->notify(new SendTaskNotification($message));
 
             $task->status = 'disable';
             $task->save();
 
             return response()->json(["message" => "Task muvaffaqqiyatli  jo'natildi!"], 200);
-        } catch (Exception $e) {
-            return $e;
+        } catch (\Exception $exception) {
+            return response()->json([
+                "message" => "Task yuborishda xatolik yuz berdi",
+                "error" => $exception->getMessage(),
+                "line" => $exception->getLine(),
+                "file" => $exception->getFile()
+            ]);
         }
     }
 }

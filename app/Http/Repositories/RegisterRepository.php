@@ -8,7 +8,6 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
 use App\Http\Resources\UserResource;
-use Illuminate\Http\Request;
 use App\Mail\Message;
 use App\Models\ConfirmCode;
 use App\Models\User;
@@ -32,17 +31,22 @@ class RegisterRepository implements RegisterInterface
                 'code' => $rand,
                 'email' => $request->email,
             ]);
-
             return response()->json(["message" => "Email pochtangizga kod jo'natildi"], 200);
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Exception $exception) {
+            return response()->json([
+                "message" => "Email yuborishda xatolik yuz berdi",
+                "error" => $exception->getMessage(),
+                "line" => $exception->getLine(),
+                "file" => $exception->getFile()
+            ]);
         }
     }
 
 
     public function confirmCode(ConfirmCodeRequest $request)
     {
-        $confirm_code = ConfirmCode::select('*')->where('email', $request->email)
+        $confirm_code = ConfirmCode::where('email', $request->email)
+            ->where('active', false)
             ->orderBy('id', 'desc')->first();
 
         if (!$confirm_code) {
@@ -67,23 +71,32 @@ class RegisterRepository implements RegisterInterface
 
     public function userRegister(RegisterRequest $request)
     {
-        $code = ConfirmCode::select('*')->where('email', $request->email)
-            ->where('active', true)
-            ->orderBy('id', 'desc')->first();
+        try {
+            $code = ConfirmCode::where('email', $request->email)
+                ->where('active', true)
+                ->orderBy('id', 'desc')->first();
 
-        if (!$code) {
-            return response()->json(["message" => "Siz kod tasdiqlamagansiz!"], 401);
+            if (!$code)
+                return response()->json(["message" => "Siz kod tasdiqlamagansiz!"], 401);
+
+            $user =  User::create([
+                'fullname' => $request->fullname,
+                'username' => $request->username,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => Hash::make($request->password),
+            ]);
+            $code->delete();
+            $token = $user->createToken('auth-token')->plainTextToken;
+            return response()->json(["message" => "Ro'yxatdan muvaffaqqiyatli o'tdingiz!", "token" => $token], 200);
+        } catch (\Exception $exception) {
+            return response()->json([
+                "message" => "Ro'yxatdan o'tishda xatolik yuz berdi",
+                "error" => $exception->getMessage(),
+                "line" => $exception->getLine(),
+                "file" => $exception->getFile()
+            ]);
         }
-        $user =  User::create([
-            'fullname' => $request->fullname,
-            'username' => $request->username,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'password' => Hash::make($request->password),
-        ]);
-        $code->delete();
-        $token = $user->createToken('auth-token')->plainTextToken;
-        return response()->json(["message" => "Ro'yxatdan muvaffaqqiyatli o'tdingiz!", "token" => $token], 200);
     }
 
 
@@ -106,14 +119,12 @@ class RegisterRepository implements RegisterInterface
 
     public function getUsers()
     {
-        $get = User::paginate(15);
-        return UserResource::collection($get);
+        return UserResource::collection(User::paginate(15));
     }
 
     public function authUser()
     {
-        $auth = Auth::user();
-        return new UserResource($auth);
+        return new UserResource(Auth::user());
     }
 
     public function searchUser()
@@ -121,8 +132,7 @@ class RegisterRepository implements RegisterInterface
         $search = request('search');
         $auth = Auth::user()->id;
 
-        $user = User::select('*')
-            ->where('id', '!=', $auth)
+        $user = User::where('id', '!=', $auth)
             ->when($search, function ($query) use ($search) {
                 $query->where('username', 'like', "%$search%")
                     ->orWhere('fullname', 'like', "%$search%")

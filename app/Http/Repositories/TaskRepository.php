@@ -13,11 +13,12 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskInterface
 {
+    public $taskId = 'tasks.id as task_id';
 
     public function createTask(TaskRequest $request)
     {
 
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i');
+        $formattedTime = date('Y-m-d H:i');
         $task = Task::create([
             'user_id' => Auth::user()->id,
             'task_name' => $request->task_name,
@@ -32,7 +33,7 @@ class TaskRepository implements TaskInterface
 
     public function updateTask(UpdateTaskRequest $request, int $task_id)
     {
-        $task = Task::select('*')->where('id', $task_id)
+        $task = Task::where('id', $task_id)
             ->where('user_id', Auth::user()->id)
             ->where('active', true)
             ->where('status', 'enable')
@@ -54,9 +55,9 @@ class TaskRepository implements TaskInterface
 
     public function endTask(int $task_id)
     {
-        $formattedTime = now('Asia/Tashkent')->format('Y-m-d H:i:s');
+        $formattedTime = date('Y-m-d H:i');
 
-        $task = Task::select('*')->where('id', $task_id)
+        $task = Task::where('id', $task_id)
             ->where('user_id', Auth::user()->id)
             ->where('active', true)
             ->where('status', 'enable')
@@ -69,7 +70,7 @@ class TaskRepository implements TaskInterface
                 'end_task' => $formattedTime
             ]);
 
-            $user = User::select('*')->where('id', $task->real_user)->where('active', true)->first();
+            $user = User::where('id', $task->real_user)->where('active', true)->first();
             if ($user) {
                 $message = [
                     "task_name" => $task->task_name,
@@ -91,14 +92,24 @@ class TaskRepository implements TaskInterface
     {
         $search = request('search');
 
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        $task = Task::select(
+            $this->taskId,
+            'description',
+            'task_name',
+            'username',
+            'start_task',
+            'end_task',
+            'original_task',
+            'high',
+            'category_name'
+        )
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->when($search, function ($query) use ($search) {
                 $query->where('description', 'like', "%$search%")
                     ->orWhere('task_name', 'like', "%$search%")
                     ->orWhere('username', 'like', "%$search%");
             })
-            ->orderBy('tasks.id', 'asc')
+            ->orderBy('task_id', 'asc')
             ->paginate(15);
         return TaskResource::collection($task);
     }
@@ -112,7 +123,19 @@ class TaskRepository implements TaskInterface
         $late = request('late');
         $auth = Auth::user()->id;
 
-        $task = Task::select('tasks.id as task_id', 'tasks.active', 'tasks.status', 'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        return Task::select(
+            $this->taskId,
+            'tasks.active',
+            'tasks.status',
+            'description',
+            'task_name',
+            'username',
+            'start_task',
+            'end_task',
+            'original_task',
+            'high',
+            'category_name'
+        )
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.user_id', $auth)
             ->when($finish, function ($query) use ($finish) {
@@ -128,12 +151,11 @@ class TaskRepository implements TaskInterface
                 $query->where('category_name', "$late")
                     ->where('end_task', null)
                     ->where('tasks.active', true)
-                    ->where('original_task', '<', now());
+                    ->where('original_task', '<', date('Y-m-d H:i'));
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
             ->paginate(15);
-        return $task;
     }
 
     public function admin()
@@ -142,7 +164,17 @@ class TaskRepository implements TaskInterface
         $continue = request('continue');
         $late = request('late');
 
-        $task = Task::select('tasks.id as task_id',  'description', 'task_name', 'username', 'start_task', 'end_task', 'original_task', 'high', 'category_name')
+        return Task::select(
+            $this->taskId,
+            'description',
+            'task_name',
+            'username',
+            'start_task',
+            'end_task',
+            'original_task',
+            'high',
+            'category_name'
+        )
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->when($finish, function ($query) use ($finish) {
                 $query->where('category_name', "$finish")
@@ -156,11 +188,10 @@ class TaskRepository implements TaskInterface
             ->when($late, function ($query) use ($late) {
                 $query->where('category_name', "$late")
                     ->where('tasks.active', true)
-                    ->where('original_task', '<', now());
+                    ->where('original_task', '<', date('Y-m-d H:i') );
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
             ->paginate(15);
-        return $task;
     }
 }

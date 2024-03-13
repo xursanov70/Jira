@@ -23,7 +23,7 @@ class UpdateTaskRequest extends FormRequest
     {
         return [
             "category_name" => "required|in:Official,Personal",
-            'original_task' => 'required|date|after_or_equal:' . now('Asia/Tashkent')->format('Y-m-d') . '|before:2050-01-01 00:00:00',
+            'original_task' => 'required|date|after_or_equal:' . date('Y-m-d') . '|before:2050-01-01 00:00:00',
             'high' =>  'required|in:High,Medium,Low',
             "description" => "required|max:255",
             "task_name" => "required|max:50",

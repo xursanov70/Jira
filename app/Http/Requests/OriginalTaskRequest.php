@@ -22,7 +22,7 @@ class OriginalTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'original_task' => 'required|date|after_or_equal:' . now('Asia/Tashkent')->format('Y-m-d') . '|before:2050-01-01 00:00:00',
+            'original_task' => 'required|date|after_or_equal:' . date('Y-m-d'). '|before:2050-01-01 00:00:00',
         ];
     }
 
