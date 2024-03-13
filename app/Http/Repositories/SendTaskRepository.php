@@ -113,7 +113,6 @@ class SendTaskRepository implements SendTaskInterface
             if ($task) {
                 $task->delete();
             }
-
             return response()->json(["message" => "Taskni qabul qildingiz!", "data" => $message], 200);
         } catch (\Exception $exception) {
             return response()->json([
@@ -128,7 +127,6 @@ class SendTaskRepository implements SendTaskInterface
     public function declineForMyTask(DeleteForMyTaskRequest $request, int $send_task_id)
     {
         try {
-
             $send_task = SendTask::where('id', $send_task_id)
                 ->where('accept', false)
                 ->where('decline', false)
@@ -180,17 +178,9 @@ class SendTaskRepository implements SendTaskInterface
 
     public function forMeTasks()
     {
-
         return SendTask::select(
-            'send_tasks.id as send_task_id',
-            'task_name',
-            'category_name',
-            'description',
-            'high',
-            'original_task',
-            'username',
-            'send_time'
-        )
+            'send_tasks.id as send_task_id', 'task_name', 'category_name', 'description',
+            'high', 'original_task','username', 'send_time')
             ->join('users', 'users.id', '=', 'send_tasks.user_id')
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
@@ -203,23 +193,13 @@ class SendTaskRepository implements SendTaskInterface
 
     public function mySendTasks()
     {
-
         $accept = request('accept');
         $decline = request('decline');
         $auth = Auth::user()->id;
 
         return SendTask::select(
-            'send_tasks.id as send_task_id',
-            'task_name',
-            'title',
-            'category_name',
-            'description',
-            'accept',
-            'decline',
-            'high',
-            'original_task',
-            'username'
-        )
+            'send_tasks.id as send_task_id',  'task_name',   'title', 'category_name',   'description',
+            'accept',  'decline', 'high', 'original_task', 'username')
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('send_tasks.user_id', $auth)
             ->when($accept !== null, function ($query) use ($accept) {

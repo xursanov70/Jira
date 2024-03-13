@@ -139,16 +139,16 @@ class TaskRepository implements TaskInterface
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.user_id', $auth)
             ->when($finish, function ($query) use ($finish) {
-                $query->where('category_name', "$finish")
+                $query->where('category_name', $finish)
                     ->where('tasks.active', false);
             })
             ->when($continue, function ($query) use ($continue) {
-                $query->where('category_name', "$continue")
+                $query->where('category_name', $continue)
                     ->where('end_task', null)
                     ->where('tasks.active', true);
             })
             ->when($late, function ($query) use ($late) {
-                $query->where('category_name', "$late")
+                $query->where('category_name', $late)
                     ->where('end_task', null)
                     ->where('tasks.active', true)
                     ->where('original_task', '<', date('Y-m-d H:i'));
@@ -177,16 +177,16 @@ class TaskRepository implements TaskInterface
         )
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->when($finish, function ($query) use ($finish) {
-                $query->where('category_name', "$finish")
+                $query->where('category_name', $finish)
                     ->where('tasks.active', false);
             })
             ->when($continue, function ($query) use ($continue) {
-                $query->where('category_name', "$continue")
+                $query->where('category_name', $continue)
                     ->where('end_task', null)
                     ->where('tasks.active', true);
             })
             ->when($late, function ($query) use ($late) {
-                $query->where('category_name', "$late")
+                $query->where('category_name', $late)
                     ->where('tasks.active', true)
                     ->where('original_task', '<', date('Y-m-d H:i') );
             })
