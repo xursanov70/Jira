@@ -6,6 +6,7 @@ use App\Http\Interfaces\TaskInterface;
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
+use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
 use App\Notifications\EndTaskNotification;
@@ -69,18 +70,22 @@ class TaskRepository implements TaskInterface
             $task->update([
                 'end_task' => $formattedTime
             ]);
+            $real_task = SendTask::where('id', $task->real_task)->first();
 
-            $user = User::where('id', $task->real_user)->where('active', true)->first();
-            if ($user) {
-                $message = [
-                    "task_name" => $task->task_name,
-                    "description" => $task->description,
-                    "category_name" => $task->category_name,
-                    "original_task" => $task->original_task,
-                    "high" => $task->high,
-                ];
+            $real_task->update(['end_task_time' => $formattedTime]);
+
+            $user = User::where('id', $real_task->user_id)->where('active', true)->first();
+            $message = [
+                "task_name" => $task->task_name,
+                "description" => $task->description,
+                "category_name" => $task->category_name,
+                "original_task" => $task->original_task,
+                "high" => $task->high,
+            ];
+            if ($user->send_email == true) {
                 $user->notify(new EndTaskNotification($message));
             }
+
             $task->active = false;
             $task->save();
             return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task], 200);
@@ -92,17 +97,8 @@ class TaskRepository implements TaskInterface
     {
         $search = request('search');
 
-        $task = Task::select(
-            $this->taskId,
-            'description',
-            'task_name',
-            'username',
-            'start_task',
-            'end_task',
-            'original_task',
-            'high',
-            'category_name'
-        )
+        $task = Task::select($this->taskId, 'description',
+        'task_name',  'username', 'start_task', 'end_task','original_task',  'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->when($search, function ($query) use ($search) {
                 $query->where('description', 'like', "%$search%")
@@ -123,24 +119,14 @@ class TaskRepository implements TaskInterface
         $late = request('late');
         $auth = Auth::user()->id;
 
-        return Task::select(
-            $this->taskId,
-            'tasks.active',
-            'tasks.status',
-            'description',
-            'task_name',
-            'username',
-            'start_task',
-            'end_task',
-            'original_task',
-            'high',
-            'category_name'
-        )
+        return Task::select( $this->taskId,  'tasks.active', 'tasks.status', 'description',
+        'task_name',  'username', 'start_task', 'end_task','original_task',  'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->where('tasks.user_id', $auth)
             ->when($finish, function ($query) use ($finish) {
                 $query->where('category_name', $finish)
-                    ->where('tasks.active', false);
+                    ->where('tasks.active', false)
+                    ->orderBy('end_task', 'desc');
             })
             ->when($continue, function ($query) use ($continue) {
                 $query->where('category_name', $continue)
@@ -164,17 +150,8 @@ class TaskRepository implements TaskInterface
         $continue = request('continue');
         $late = request('late');
 
-        return Task::select(
-            $this->taskId,
-            'description',
-            'task_name',
-            'username',
-            'start_task',
-            'end_task',
-            'original_task',
-            'high',
-            'category_name'
-        )
+        return Task::select($this->taskId, 'description',
+        'task_name',  'username', 'start_task', 'end_task','original_task',  'high', 'category_name')
             ->join('users', 'users.id', '=', 'tasks.user_id')
             ->when($finish, function ($query) use ($finish) {
                 $query->where('category_name', $finish)
@@ -188,7 +165,7 @@ class TaskRepository implements TaskInterface
             ->when($late, function ($query) use ($late) {
                 $query->where('category_name', $late)
                     ->where('tasks.active', true)
-                    ->where('original_task', '<', date('Y-m-d H:i') );
+                    ->where('original_task', '<', date('Y-m-d H:i'));
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')

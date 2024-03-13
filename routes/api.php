@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
     Route::get('user/search', [RegisterController::class, 'searchUser']);
+    Route::put('change/send/email', [RegisterController::class, 'changeSendEmail']);
     
     Route::post('create/task', [TaskController::class, 'createTask']);
     Route::post('update/task/{task_id}', [TaskController::class, 'updateTask']);
@@ -63,4 +64,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('send/decline/task', [SendMyTaskController::class, 'sendDeclineTAsk']);  //decline taskni bowqaga jonatw
     Route::post('share/task', [SendMyTaskController::class, 'shareTask']);  //mavjud taskni jonatiw
     Route::post('add/my/task', [SendMyTaskController::class, 'addMyTask']);  //decline taskni oziga qoshish
+    Route::post('add/end/task', [SendMyTaskController::class, 'addEndTask']);  //end taskni oziga qoshish
 });

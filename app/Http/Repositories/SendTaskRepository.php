@@ -21,10 +21,14 @@ class SendTaskRepository implements SendTaskInterface
         try {
             $formattedTime = date('Y-m-d H:i');
             $partner = $request->partner_id;
+            $auth = Auth::user()->id;
             $user = User::where('id', $partner)->where('active', true)->first();
+            if ($partner == $auth) {
+                return response()->json(["message" => "O'zingiz uchun task yarata olmaysiz!"], 403);
+            }
 
             $message = SendTask::create([
-                'user_id' => Auth::user()->id,
+                'user_id' => $auth,
                 'partner_id' => $partner,
                 'task_name' => $request->task_name,
                 'description' => $request->description,
@@ -33,7 +37,9 @@ class SendTaskRepository implements SendTaskInterface
                 'high' => $request->high,
                 'send_time' => $formattedTime
             ]);
-            $user->notify(new SendTaskNotification($message));
+            if ($user->send_email == true) {
+                $user->notify(new SendTaskNotification($message));
+            }
 
             return response()->json(["message" => "Task muvaffaqqiyatli yuborildi!", "data" => $message], 201);
         } catch (\Exception $exception) {
@@ -70,7 +76,9 @@ class SendTaskRepository implements SendTaskInterface
             $user = User::where('id', $partner_id)
                 ->where('active', true)
                 ->first();
-            $user->notify(new SendTaskNotification($message));
+            if ($user->send_email == true) {
+                $user->notify(new SendTaskNotification($message));
+            }
         }
         return response()->json(["message" => "Task o'zgartirildi!"], 200);
     }
@@ -92,8 +100,6 @@ class SendTaskRepository implements SendTaskInterface
                 'original_task' => $request->original_task
             ]);
 
-            $send_task->accept = true;
-            $send_task->save();
             $user = User::where('id', $send_task->user_id)->where('active', true)->first();
 
             $formattedTime = date('Y-m-d H:i:s');
@@ -105,14 +111,19 @@ class SendTaskRepository implements SendTaskInterface
                 'start_task' => $formattedTime,
                 'original_task' => $send_task->original_task,
                 'high' => $send_task->high,
-                'real_user' => $send_task->user_id,
+                'real_tak' => $send_task->id,
             ]);
-            $user->notify(new AcceptNotification($message));
+            if ($user->send_email == true) {
+                $user->notify(new AcceptNotification($message));
+            }
 
             $task = Task::where('id', $send_task->last_task_id)->first();
             if ($task) {
                 $task->delete();
             }
+            $send_task->accept = true;
+            $send_task->save();
+
             return response()->json(["message" => "Taskni qabul qildingiz!", "data" => $message], 200);
         } catch (\Exception $exception) {
             return response()->json([
@@ -150,20 +161,17 @@ class SendTaskRepository implements SendTaskInterface
                 "high" => $send_task->high,
                 "title" => $send_task->title,
             ];
-            $user->notify(new DeclineNotification($message));
+            if ($user->send_email == true) {
+                $user->notify(new DeclineNotification($message));
+            }
+
             $task_status = Task::where('id', $send_task->last_task_id)->first();
             if ($task_status) {
                 $task_status->status = 'enable';
                 $task_status->save();
             }
-
-            $task = Task::where('id', $send_task->last_task_id)->first();
-            if ($task) {
-                $task->status = 'enable';
-                $task->save();
-            }
-
-            $send_task->delete();
+            $send_task->decline = true;
+            $send_task->save();
 
             return response()->json(["message" => "Taskni bekor qilganingiz tasdiqlandi!"], 200);
         } catch (\Exception $exception) {
@@ -178,9 +186,8 @@ class SendTaskRepository implements SendTaskInterface
 
     public function forMeTasks()
     {
-        return SendTask::select(
-            'send_tasks.id as send_task_id', 'task_name', 'category_name', 'description',
-            'high', 'original_task','username', 'send_time')
+        return SendTask::select('send_tasks.id as send_task_id',  'task_name', 'category_name',  'description',
+        'high',  'original_task',   'username', 'end_task_time', 'send_time')
             ->join('users', 'users.id', '=', 'send_tasks.user_id')
             ->where('send_tasks.partner_id', Auth::user()->id)
             ->where('accept', false)
@@ -197,9 +204,8 @@ class SendTaskRepository implements SendTaskInterface
         $decline = request('decline');
         $auth = Auth::user()->id;
 
-        return SendTask::select(
-            'send_tasks.id as send_task_id',  'task_name',   'title', 'category_name',   'description',
-            'accept',  'decline', 'high', 'original_task', 'username')
+        return SendTask::select('send_tasks.id as send_task_id',  'task_name', 'title',  'end_task_time',
+        'high',  'original_task',   'username', 'category_name',  'description', 'accept', 'decline')
             ->join('users', 'users.id', '=', 'send_tasks.partner_id')
             ->where('send_tasks.user_id', $auth)
             ->when($accept !== null, function ($query) use ($accept) {

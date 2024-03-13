@@ -17,4 +17,5 @@ interface RegisterInterface
     function getUsers();
     function authUser();
     function searchUser();
+    function changeSendEmail();
 }

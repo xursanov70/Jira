@@ -3,6 +3,7 @@
 namespace App\Http\Repositories;
 
 use App\Http\Interfaces\SendMyTaskInterface;
+use App\Http\Requests\AddEndTaskRequest;
 use App\Http\Requests\AddMyTaskRequest;
 use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\ShareTaskRequest;
@@ -47,7 +48,9 @@ class SendMyTaskRepository implements SendMyTaskInterface
                 "original_task" => $decline_task->original_task,
                 "high" => $decline_task->high
             ];
-            $user->notify(new SendTaskNotification($message));
+            if ($user->send_email == true) {
+                $user->notify(new SendTaskNotification($message));
+            }
             return response()->json(["message" => "Task muvaffaqqiyatli jo'natildi!"], 200);
         } catch (\Exception $exception) {
             return response()->json([
@@ -124,9 +127,10 @@ class SendMyTaskRepository implements SendMyTaskInterface
                 'high' => $task->high,
                 'send_time' => $formattedTime
             ]);
-            $user = User::find($request_user_id);
             $user = User::where('id', $request_user_id)->where('active', true)->first();
-            $user->notify(new SendTaskNotification($message));
+            if ($user->send_email == true) {
+                $user->notify(new SendTaskNotification($message));
+            }
 
             $task->status = 'disable';
             $task->save();
@@ -140,5 +144,18 @@ class SendMyTaskRepository implements SendMyTaskInterface
                 "file" => $exception->getFile()
             ]);
         }
+    }
+
+    public function addEndTask(AddEndTaskRequest $request)
+    {
+        $task = Task::where('id', $request->task_id)->where('user_id', Auth::user()->id)->where('active', false)
+            ->where('end_task', '!=', null)
+            ->first();
+        if (!$task)
+            return response()->json(['message' => "Task mavjud emas"], 403);
+        $task->active = true;
+        $task->end_task = null;
+        $task->save();
+        return response()->json(['message' => "Tasklaringiz ro'yxatiga qo'shildi"], 200);
     }
 }

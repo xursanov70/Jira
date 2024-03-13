@@ -143,4 +143,17 @@ class RegisterRepository implements RegisterInterface
             ->paginate(30);
         return UserResource::collection($user);
     }
+
+    public function changeSendEmail()
+    {
+        $user = User::where('id', Auth::user()->id)->where('active', true)->first();
+        if ($user->send_email == true) {
+            $user->send_email = false;
+            $user->save();
+        } else {
+            $user->send_email = true;
+            $user->save();
+        }
+        return response()->json(['message' => "O'zgartirildi"], 200);
+    }
 }

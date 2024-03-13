@@ -7,7 +7,9 @@ use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -45,5 +47,9 @@ class RegisterController extends Controller
     public function searchUser()
     {
         return $this->registerInterface->searchUser();
+    }
+
+    public function changeSendEmail(){
+        return $this->registerInterface->changeSendEmail();
     }
 }

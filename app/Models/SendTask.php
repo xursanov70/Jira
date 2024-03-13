@@ -20,7 +20,8 @@ class SendTask extends Model
         'original_task',
         'title',
         'send_time',
-        'last_task_id'
+        'last_task_id',
+        'end_task_time'
     ];
 
     

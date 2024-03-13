@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Interfaces\SendMyTaskInterface;
+use App\Http\Requests\AddEndTaskRequest;
 use App\Http\Requests\AddMyTaskRequest;
 use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\ShareTaskRequest;
@@ -24,4 +25,9 @@ class SendMyTaskController extends Controller
     public function shareTask(ShareTaskRequest $request){
         return $this->sendMyTaskInterface->shareTask($request);
     }
+
+    public function addEndTask(AddEndTaskRequest $request){
+        return $this->sendMyTaskInterface->addEndTask($request);
+    }
+
 }

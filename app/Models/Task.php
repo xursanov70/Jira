@@ -19,6 +19,6 @@ class Task extends Model
         'original_task',
         'high',
         'status',
-        'real_user'
+        'real_task'
     ];
 }

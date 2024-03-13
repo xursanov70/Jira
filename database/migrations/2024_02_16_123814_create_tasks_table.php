@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('high');
             $table->boolean('active')->default(true);
             $table->enum('status', ['enable', 'disable'])->default('enable');
-            $table->integer('real_user')->nullable();
+            $table->integer('real_task')->nullable();
             $table->timestamps();
         });
     }

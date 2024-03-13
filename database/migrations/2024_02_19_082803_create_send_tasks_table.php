@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('accept')->default(false);
             $table->boolean('decline')->default(false);
             $table->integer('last_task_id')->nullable();
+            $table->dateTime('end_task_time')->nullable();
             $table->timestamps();
         });
     }
