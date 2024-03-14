@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Interfaces\TaskInterface;
+use App\Http\Requests\AddEndTaskRequest;
+use App\Http\Requests\DeleteEndTaskRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 
@@ -44,5 +46,13 @@ class TaskController extends Controller
         // return response()->json(["message" => "Sizning huquqingiz yo'q!"], 403);
 
         return $this->taskInterface->admin();
+    }
+
+    public function addEndTask(AddEndTaskRequest $request){
+        return $this->taskInterface->addEndTask($request);
+    }
+
+    public function deleteEndTask(DeleteEndTaskRequest $request){
+        return $this->taskInterface->deleteEndTask($request);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Repositories;
 use App\Http\Interfaces\SendMyTaskInterface;
 use App\Http\Requests\AddEndTaskRequest;
 use App\Http\Requests\AddMyTaskRequest;
+use App\Http\Requests\DeleteEndTaskRequest;
 use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\ShareTaskRequest;
 use App\Models\SendTask;
@@ -144,18 +145,5 @@ class SendMyTaskRepository implements SendMyTaskInterface
                 "file" => $exception->getFile()
             ]);
         }
-    }
-
-    public function addEndTask(AddEndTaskRequest $request)
-    {
-        $task = Task::where('id', $request->task_id)->where('user_id', Auth::user()->id)->where('active', false)
-            ->where('end_task', '!=', null)
-            ->first();
-        if (!$task)
-            return response()->json(['message' => "Task mavjud emas"], 403);
-        $task->active = true;
-        $task->end_task = null;
-        $task->save();
-        return response()->json(['message' => "Tasklaringiz ro'yxatiga qo'shildi"], 200);
     }
 }

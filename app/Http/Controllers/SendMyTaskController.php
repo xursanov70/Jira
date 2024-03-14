@@ -26,8 +26,4 @@ class SendMyTaskController extends Controller
         return $this->sendMyTaskInterface->shareTask($request);
     }
 
-    public function addEndTask(AddEndTaskRequest $request){
-        return $this->sendMyTaskInterface->addEndTask($request);
-    }
-
 }

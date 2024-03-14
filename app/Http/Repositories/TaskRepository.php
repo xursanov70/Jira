@@ -3,6 +3,8 @@
 namespace App\Http\Repositories;
 
 use App\Http\Interfaces\TaskInterface;
+use App\Http\Requests\AddEndTaskRequest;
+use App\Http\Requests\DeleteEndTaskRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
@@ -170,5 +172,28 @@ class TaskRepository implements TaskInterface
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")
             ->orderBy('original_task', 'asc')
             ->paginate(15);
+    }
+
+    public function addEndTask(AddEndTaskRequest $request)
+    {
+        $task = Task::where('id', $request->end_task_id)->where('user_id', Auth::user()->id)->where('active', false)
+            ->where('end_task', '!=', null)
+            ->first();
+        if (!$task)
+            return response()->json(['message' => "Task mavjud emas"], 403);
+        $task->active = true;
+        $task->end_task = null;
+        $task->save();
+        return response()->json(['message' => "Tasklaringiz ro'yxatiga qo'shildi"], 200);
+    }
+
+    public function deleteEndTask(DeleteEndTaskRequest $request){
+        $task = Task::where('id', $request->end_task_id)->where('user_id', Auth::user()->id)->where('active', false)
+            ->where('end_task', '!=', null)
+            ->first();
+            if (!$task)
+            return response()->json(['message' => "Task mavjud emas"], 403);
+        $task->delete();
+        return response()->json(['message' => "Task muvaffaqqiyatli o'chirildi!"], 200);
     }
 }
