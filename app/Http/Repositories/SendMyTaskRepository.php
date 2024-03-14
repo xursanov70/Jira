@@ -3,9 +3,7 @@
 namespace App\Http\Repositories;
 
 use App\Http\Interfaces\SendMyTaskInterface;
-use App\Http\Requests\AddEndTaskRequest;
 use App\Http\Requests\AddMyTaskRequest;
-use App\Http\Requests\DeleteEndTaskRequest;
 use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\ShareTaskRequest;
 use App\Models\SendTask;
@@ -13,7 +11,6 @@ use App\Models\Task;
 use App\Models\User;
 use App\Notifications\SendTaskNotification;
 use Illuminate\Support\Facades\Auth;
-
 
 class SendMyTaskRepository implements SendMyTaskInterface
 {

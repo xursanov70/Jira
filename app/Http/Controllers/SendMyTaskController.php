@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Interfaces\SendMyTaskInterface;
-use App\Http\Requests\AddEndTaskRequest;
 use App\Http\Requests\AddMyTaskRequest;
 use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\ShareTaskRequest;

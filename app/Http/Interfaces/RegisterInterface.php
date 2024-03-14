@@ -6,8 +6,6 @@ use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
-use Illuminate\Http\Request;
-
 interface RegisterInterface
 {
     function sendEmail(SendEmailRequest $request);
