@@ -27,6 +27,7 @@ class RegisterRequest extends FormRequest
             "fullname" => "required|max:50|min:3",
             "phone" => "required|string|size:17|starts_with:+998|unique:users,phone,except,id",
             "email" => "required|max:50",
+            "send_email" => "boolean",
         ];
     }
 
