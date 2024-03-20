@@ -49,4 +49,8 @@ class RegisterController extends Controller
     public function changeSendEmail(){
         return $this->registerInterface->changeSendEmail();
     }
+
+    public function test(){
+        
+    }
 }

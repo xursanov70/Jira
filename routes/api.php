@@ -32,7 +32,8 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
+    
+    Route::post('test', [RegisterController::class, 'test']);
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
     Route::get('user/search', [RegisterController::class, 'searchUser']);
