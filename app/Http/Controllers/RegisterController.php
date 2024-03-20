@@ -16,6 +16,7 @@ class RegisterController extends Controller
 
     public function sendEmail(SendEmailRequest $request)
     {
+        return 'salom';
         return $this->registerInterface->sendEmail($request);
     }
 
