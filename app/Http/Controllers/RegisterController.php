@@ -12,6 +12,7 @@ class RegisterController extends Controller
 {
     public function __construct(protected RegisterInterface $registerInterface)
     {
+        
     }
 
     public function sendEmail(SendEmailRequest $request)
