@@ -29,21 +29,24 @@ class AcceptNotification extends Notification
     {
         return ['mail'];
     }
-    
+
 
     /**
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $url = 'https://instagram.com/jasko_70';
         return (new MailMessage)
+            ->subject("Vazifa qabul bo'ldi")
             ->line("Assalamu Alaykum. Yuborilgan taskingiz partner tomonidan qabul qilindi")
             ->line("task nomi: " . $this->message['task_name'])
             ->line("task haqida: " . $this->message['description'])
             ->line("categoriya nomi: " . $this->message['category_name'])
             ->line("task tugash vaqti: " . $this->message['original_task'])
             ->line("zarurlik darajasi: " . $this->message['high'])
-            ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
+            ->line('Ilovamizdan foydalanganingiz uchun tashakkur!')
+            ->action('Kirish', $url);
     }
 
     /**
