@@ -33,7 +33,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     
-    Route::post('test', [RegisterController::class, 'test']);
+    Route::put('update/user', [RegisterController::class, 'UpdateUser']);
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
     Route::get('user/search', [RegisterController::class, 'searchUser']);
@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('finish/task', [TaskController::class, 'finishTasks']);          
     Route::get('continue/task', [TaskController::class, 'continueTasks']);          
     Route::get('late/task', [TaskController::class, 'lateTasks']);      
-    Route::post('add/end/task', [TaskController::class, 'addEndTask']);  //end taskni oziga qoshish
+    Route::put('add/end/task', [TaskController::class, 'addEndTask']);  //end taskni oziga qoshish
     Route::delete('delete/end/task', [TaskController::class, 'deleteEndTask']);  //end taskni oziga qoshish
         
     Route::get('user', [TaskController::class, 'user']);          
@@ -62,7 +62,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('accept/for/my/task/{send_task_id}', [SendTaskController::class, 'acceptForMyTask']);   //taskni qabul qilish
     Route::put('decline/for/my/task/{send_task_id}', [SendTaskController::class, 'declineForMyTask']);  //qabul qmaslik
     Route::get('for/me/tasks', [SendTaskController::class, 'forMeTasks']);  //menga kegan tasklar
-    Route::get('my/sand/tasks', [SendTaskController::class, 'mySendTasks']);  //men jonatgan tasklar
+    Route::get('my/send/tasks', [SendTaskController::class, 'mySendTasks']);  //men jonatgan tasklar
     
     Route::post('send/decline/task', [SendMyTaskController::class, 'sendDeclineTAsk']);  //decline taskni bowqaga jonatw
     Route::post('share/task', [SendMyTaskController::class, 'shareTask']);  //mavjud taskni jonatiw

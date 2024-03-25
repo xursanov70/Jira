@@ -7,6 +7,7 @@ use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class RegisterController extends Controller
 {
@@ -20,13 +21,18 @@ class RegisterController extends Controller
     }
 
     public function userRegister(RegisterRequest $request)
-    { 
+    {
         return $this->registerInterface->userRegister($request);
     }
 
     public function confirmCode(ConfirmCodeRequest $request)
     {
         return $this->registerInterface->confirmCode($request);
+    }
+
+    public function updateUser(UpdateUserRequest $request)
+    {
+        return $this->registerInterface->updateUser($request);
     }
     public function userLogin(LoginRequest $request)
     {
@@ -46,11 +52,8 @@ class RegisterController extends Controller
         return $this->registerInterface->searchUser();
     }
 
-    public function changeSendEmail(){
+    public function changeSendEmail()
+    {
         return $this->registerInterface->changeSendEmail();
-    }
-
-    public function test(){
-        
     }
 }

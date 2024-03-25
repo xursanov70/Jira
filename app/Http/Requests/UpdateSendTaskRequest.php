@@ -24,10 +24,10 @@ class UpdateSendTaskRequest extends FormRequest
         return [
             "partner_id" => "required|integer",
             "category_name" => "required|in:Official,Personal",
-            'original_task' => 'required|date|after_or_equal:' . date('Y-m-d'). '|before:2050-01-01 00:00:00',
+            'original_task' => 'required|date|after_or_equal:' . date('Y-m-d'). '|before:2100-01-01 00:00:00',
             'high' => 'required|in:High,Medium,Low',
-            "description" => "required|max:255",
-            "task_name" => "required|max:50",
+            "description" => "required|max:300",
+            "task_name" => "required|max:80",
         ];
     }
 
@@ -41,7 +41,7 @@ class UpdateSendTaskRequest extends FormRequest
             "original_task.required" => "task uchun vaqt belgilang",
             "original_task.after_or_equal" => "Kiritilgan original task vaqti hozirgi vaqtdan oldin bo'lmasligi kerak",
             "original_task.date" => "Task vaqtini to'g'ri kiritng",
-            "original_task.before" => "Kiritilgan original task vaqti 2050 yildan past  bo'lishligi kerak",
+            "original_task.before" => "Kiritilgan original task vaqti 2100 yildan past  bo'lishligi kerak",
             "high.required" => "high kiritng",
             "high.in" => "Zarurlik darajasini to'g'ri kiriting",
             "task_name.required" => "Task nomini kiritng",

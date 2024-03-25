@@ -111,7 +111,7 @@ class SendTaskRepository implements SendTaskInterface
                 'start_task' => $formattedTime,
                 'original_task' => $send_task->original_task,
                 'high' => $send_task->high,
-                'real_tak' => $send_task->id,
+                'real_task' => $send_task->id,
             ]);
             if ($user->send_email == true) {
                 $user->notify(new AcceptNotification($message));
