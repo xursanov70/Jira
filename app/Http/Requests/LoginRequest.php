@@ -22,7 +22,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "username" => "required|max:30|min:3|regex:/^[A-Za-z0-9\-_]+$/",
+            "username" => "required|max:30|min:2|regex:/^[A-Za-z0-9\-_]+$/",
             "password" => "required|min:6|max:30",
         ];
     }
@@ -32,7 +32,7 @@ class LoginRequest extends FormRequest
         return [
             "username.required" => "username kiritng",
             "username.max" => "username 30 ta belgidan kam bo'lishi kerak",
-            "username.min" => "username 3 ta belgidan kam bo'lmasligi kerak",
+            "username.min" => "username 2 ta belgidan kam bo'lmasligi kerak",
             "username.regex" => "yaroqsiz username kiritildi",
 
             
