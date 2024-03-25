@@ -7,6 +7,7 @@ use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class RegisterController extends Controller
 {
@@ -48,5 +49,9 @@ class RegisterController extends Controller
 
     public function changeSendEmail(){
         return $this->registerInterface->changeSendEmail();
+    }
+    public function updateUser(UpdateUserRequest $request)
+    {
+        return $this->registerInterface->updateUser($request);
     }
 }

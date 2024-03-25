@@ -22,7 +22,7 @@ class DeleteForMyTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            "title" => "required|max:80|min:10",
+            "title" => "required|max:80|min:5",
         ];
     }
 
@@ -31,7 +31,7 @@ class DeleteForMyTaskRequest extends FormRequest
         return [
             "title.required" => "Nima uchun bu taskni qabul qilmaganingizni yozib qoldiring",
             "title.max" =>  "matn 80 ta belgidan kam bo'lishligi kerak",
-            "title.min" =>  "matn 10 ta belgidan ko'p bolishligi kerak",
+            "title.min" =>  "matn 5 ta belgidan ko'p bolishligi kerak",
         ];
     }
 }
