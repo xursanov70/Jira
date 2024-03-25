@@ -12,7 +12,6 @@ class SendMyTaskController extends Controller
     public function __construct(protected SendMyTaskInterface $sendMyTaskInterface)
     {
     }
-
     public function sendDeclineTAsk(SendDeclineTaskRequest $request){
         return $this->sendMyTaskInterface->sendDeclineTAsk($request);
     }
