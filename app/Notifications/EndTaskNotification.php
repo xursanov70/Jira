@@ -44,8 +44,8 @@ class EndTaskNotification extends Notification
         ->line("categoriya nomi: " . $this->message['category_name'])
         ->line("task tugash vaqti: " . $this->message['original_task'])
         ->line("zarurlik darajasi: " . $this->message['high'])
-        ->line('Ilovamizdan foydalanganingiz uchun tashakkur!')
-        ->action('Kirish', $url);
+        ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
+        // ->action('Kirish', $url);
     }
 
     /**

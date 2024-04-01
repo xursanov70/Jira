@@ -45,8 +45,8 @@ class DeclineNotification extends Notification
             ->line("task tugash vaqti: " . $this->message['original_task'])
             ->line("zarurlik darajasi: " . $this->message['high'])
             ->line("bekor qilinganlik sababi: " . $this->message['title'])
-            ->line('Ilovamizdan foydalanganingiz uchun tashakkur!')
-            ->action('Kirish', $url);
+            ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
+            // ->action('Kirish', $url);
     }
 
     /**

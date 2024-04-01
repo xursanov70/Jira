@@ -54,11 +54,6 @@ class TaskRequest extends FormRequest
 
             "description.required" => "task haqida ma'lumot kiritng",
             "description.max" => "task haqida ma'lumot 300 harfdan kam bo'lishligi kerak", 
-
-
-
-
-
         ];
     }
 }

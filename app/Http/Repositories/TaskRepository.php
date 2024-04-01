@@ -176,6 +176,9 @@ class TaskRepository implements TaskInterface
 
     public function admin()
     {
+        if (Auth::user()->status != 'admin'){
+            return response()->json(["message" => "Sizning huquqingiz yo'q!"], 403);
+        }
         $finish = request('finish');
         $continue = request('continue');
         $late = request('late');
