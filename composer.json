@@ -6,11 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "doctrine/dbal": "^3.5.1",
         "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "mavinoo/laravel-batch": "^2.3",
         "propaganistas/laravel-disposable-email": "^2.2",
         "pusher/pusher-php-server": "^7.2"
     },

@@ -68,3 +68,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('share/task', [SendMyTaskController::class, 'shareTask']);  //mavjud taskni jonatiw
     Route::post('add/my/task', [SendMyTaskController::class, 'addMyTask']);  //decline taskni oziga qoshish
 });
+Route::post('test', [RegisterController::class, 'test']);  //decline taskni oziga qoshish

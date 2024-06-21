@@ -22,7 +22,6 @@ class TaskRequest extends FormRequest
     public function rules()
     {
         return [
-            "partner_id" => "required|integer",
             "category_name" => "required|in:Official,Personal",
             'original_task' => 'required|date|after_or_equal:' . date('Y-m-d') . '|before:2100-01-01 00:00:00',
             'high' => 'required|in:High,Medium,Low',

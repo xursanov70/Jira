@@ -26,6 +26,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
     ];
 
+    public function isAdmin(){
+        return $this->status === 'admin';
+    }
+
   
 
     
@@ -49,4 +53,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+   
 }
