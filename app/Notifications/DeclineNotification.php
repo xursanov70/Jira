@@ -35,9 +35,8 @@ class DeclineNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = 'https://instagram.com/jasko_70';
         return (new MailMessage)
-        ->subject("Vazifa rad qilindi")
+        ->subject("Vazifa rad qilindi!")
             ->line("Assalamu Alaykum. " . $this->message['hi'])
             ->line("task nomi: " . $this->message['task_name'])
             ->line("task haqida: " . $this->message['description'])
@@ -46,7 +45,6 @@ class DeclineNotification extends Notification
             ->line("zarurlik darajasi: " . $this->message['high'])
             ->line("bekor qilinganlik sababi: " . $this->message['title'])
             ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
-            // ->action('Kirish', $url);
     }
 
     /**

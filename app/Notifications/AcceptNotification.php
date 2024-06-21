@@ -36,9 +36,8 @@ class AcceptNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = 'https://instagram.com/jasko_70';
         return (new MailMessage)
-            ->subject("Vazifa qabul bo'ldi")
+            ->subject("Vazifa qabul bo'ldi!")
             ->line("Assalamu Alaykum. Yuborilgan taskingiz partner tomonidan qabul qilindi")
             ->line("task nomi: " . $this->message['task_name'])
             ->line("task haqida: " . $this->message['description'])
@@ -46,7 +45,6 @@ class AcceptNotification extends Notification
             ->line("task tugash vaqti: " . $this->message['original_task'])
             ->line("zarurlik darajasi: " . $this->message['high'])
             ->line('Ilovamizdan foydalanganingiz uchun tashakkur!');
-            // ->action('Kirish', $url);
     }
 
     /**

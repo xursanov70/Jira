@@ -6,6 +6,7 @@ use App\Http\Interfaces\SendMyTaskInterface;
 use App\Http\Requests\AddMyTaskRequest;
 use App\Http\Requests\SendDeclineTaskRequest;
 use App\Http\Requests\ShareTaskRequest;
+use App\Jobs\SendTaskJob;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
@@ -47,7 +48,8 @@ class SendMyTaskRepository implements SendMyTaskInterface
                 "high" => $decline_task->high
             ];
             if ($user->send_email == true) {
-                $user->notify(new SendTaskNotification($message));
+                dispatch(new SendTaskJob($message, $user));
+                // $user->notify(new SendTaskNotification($message));
             }
             return response()->json(["message" => "Task muvaffaqqiyatli jo'natildi!"], 200);
         } catch (\Exception $exception) {
@@ -127,7 +129,8 @@ class SendMyTaskRepository implements SendMyTaskInterface
             ]);
             $user = User::where('id', $request_user_id)->where('active', true)->first();
             if ($user->send_email == true) {
-                $user->notify(new SendTaskNotification($message));
+                dispatch(new SendTaskJob($message, $user));
+                // $user->notify(new SendTaskNotification($message));
             }
 
             $task->status = 'disable';

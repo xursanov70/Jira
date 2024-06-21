@@ -6,6 +6,9 @@ use App\Http\Interfaces\SendTaskInterface;
 use App\Http\Requests\DeleteForMyTaskRequest;
 use App\Http\Requests\OriginalTaskRequest;
 use App\Http\Requests\SendTaskRequest;
+use App\Jobs\AcceptTaskJob;
+use App\Jobs\DeclineTaskJob;
+use App\Jobs\SendTaskJob;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
@@ -38,7 +41,8 @@ class SendTaskRepository implements SendTaskInterface
                 'send_time' => $formattedTime
             ]);
             if ($user->send_email == true) {
-                $user->notify(new SendTaskNotification($message));
+                dispatch(new SendTaskJob($message, $user));
+                // $user->notify(new SendTaskNotification($message));
             }
 
             return response()->json(["message" => "Task muvaffaqqiyatli yuborildi!", "data" => $message], 201);
@@ -77,7 +81,8 @@ class SendTaskRepository implements SendTaskInterface
                 ->where('active', true)
                 ->first();
             if ($user->send_email == true) {
-                $user->notify(new SendTaskNotification($message));
+                dispatch(new SendTaskJob($message, $user));
+                // $user->notify(new SendTaskNotification($message));
             }
         }
         return response()->json(["message" => "Task o'zgartirildi!"], 200);
@@ -114,7 +119,8 @@ class SendTaskRepository implements SendTaskInterface
                 'real_task' => $send_task->id
             ]);
             if ($user->send_email == true) {
-                $user->notify(new AcceptNotification($message));
+                dispatch(new AcceptTaskJob($message, $user));
+                // $user->notify(new AcceptNotification($message));
             }
 
             $task = Task::where('id', $send_task->last_task_id)->first();
@@ -162,7 +168,8 @@ class SendTaskRepository implements SendTaskInterface
                 "title" => $send_task->title,
             ];
             if ($user->send_email == true) {
-                $user->notify(new DeclineNotification($message));
+                dispatch(new DeclineTaskJob($message, $user));
+                // $user->notify(new DeclineNotification($message));
             }
 
             $task_status = Task::where('id', $send_task->last_task_id)->first();

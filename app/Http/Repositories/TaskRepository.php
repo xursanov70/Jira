@@ -8,6 +8,7 @@ use App\Http\Requests\DeleteEndTaskRequest;
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
+use App\Jobs\EndTaskJob;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
@@ -86,7 +87,8 @@ class TaskRepository implements TaskInterface
                         "high" => $task->high,
                     ];
                     if ($user->send_email == true) {
-                        $user->notify(new EndTaskNotification($message));
+                        dispatch(new EndTaskJob($message, $user));
+                        // $user->notify(new EndTaskNotification($message));
                     }
                 }
                 $task->active = false;
