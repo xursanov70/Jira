@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class SendMyTaskRepository implements SendMyTaskInterface
 {
 
-    public function sendDeclineTAsk(SendDeclineTaskRequest $request)
+    public function sendDeclineTask(SendDeclineTaskRequest $request)
     {
 
         try {
@@ -38,16 +38,8 @@ class SendMyTaskRepository implements SendMyTaskInterface
             $decline_task->save();
             $user = User::where('id', $request_partner_id)->where('active', true)->first();
 
-            $message = [
-                "hi" => "Sizga yangi task keldi",
-                "task_name" => $decline_task->task_name,
-                "description" => $decline_task->description,
-                "category_name" => $decline_task->category_name,
-                "original_task" => $decline_task->original_task,
-                "high" => $decline_task->high
-            ];
             if ($user->send_email == true) {
-                dispatch(new SendTaskJob($message, $user));
+                dispatch(new SendTaskJob($decline_task, $user));
             }
             return response()->json(["message" => "Task muvaffaqqiyatli jo'natildi!"], 200);
         } catch (\Exception $exception) {
