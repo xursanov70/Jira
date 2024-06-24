@@ -24,7 +24,7 @@ class UpdateTaskRequest extends FormRequest
         return [
             "category_name" => "required|in:Official,Personal",
             'original_task' => 'required|date|after_or_equal:' . date('Y-m-d') . '|before:2100-01-01 00:00:00',
-            'high' =>  'required|in:High,Medium,Low',
+            'high' => 'required|in:High,Medium,Low',
             "description" => "required|max:300",
             "task_name" => "required|max:80",
         ];
@@ -33,23 +33,23 @@ class UpdateTaskRequest extends FormRequest
     public function messages()
     {
         return [
-            "category_name.required" => "category nomini kiritng",
-            "category_name.in" => "category nomini to'g'ri kiritng",
-            
+            "category_name.required" => "category nomini kiriting",
+            "category_name.in" => "category nomini to'g'ri kiriting",
+
             "original_task.required" => "task uchun vaqt belgilang",
             "original_task.after_or_equal" => "Kiritilgan original task vaqti hozirgi vaqtdan oldin bo'lmasligi kerak",
-            "original_task.date" => "Task vaqtini to'g'ri kiritng",
             "original_task.before" => "Kiritilgan original task vaqti 2100 yildan past  bo'lishligi kerak",
+            "original_task.date" => "Task vaqtini to'g'ri kiritng",
 
-            "high.required" => "high kiritng",
+            "high.required" => "high kiriting",
             "high.in" => "Zarurlik darajasini to'g'ri kiriting",
-            
-            "task_name.required" => "Task nomini kiritng",
+
+            "task_name.required" => "Task nomini kiriting",
             "task_name.max" => "task nomi  80 harfdan kam bo'lishligi kerak",
             "task_name.min" => "task nomi  5 ta belgidan kam bo'lmasligi kerak",
 
             "description.required" => "task haqida ma'lumot kiritng",
-            "description.max" => "task haqida ma'lumot 300 harfdan kam bo'lishligi kerak",
+            "description.max" => "task haqida ma'lumot 300 harfdan kam bo'lishligi kerak", 
         ];
     }
 }

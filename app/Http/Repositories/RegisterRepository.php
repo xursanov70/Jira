@@ -9,15 +9,13 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Mail\Message;
+use App\Jobs\SendEmailJob;
 use App\Models\ConfirmCode;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-
 
 
 class RegisterRepository implements RegisterInterface
@@ -26,12 +24,12 @@ class RegisterRepository implements RegisterInterface
     {
         try {
             $rand = rand(10000, 99999);
-            Mail::to($request->email)->send(new Message($rand));
-
-            ConfirmCode::create([
+            
+           $confirmCode = ConfirmCode::create([
                 'code' => $rand,
                 'email' => $request->email,
             ]);
+            dispatch(new SendEmailJob($confirmCode));
             return response()->json(["message" => "Email pochtangizga kod jo'natildi"], 200);
         } catch (\Exception $exception) {
             return response()->json([

@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('high');
             $table->dateTime('original_task');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('partner_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('partner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('send_time');
             $table->boolean('accept')->default(false);
             $table->boolean('decline')->default(false);

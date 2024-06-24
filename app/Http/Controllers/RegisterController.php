@@ -21,7 +21,7 @@ class RegisterController extends Controller
     }
 
     public function userRegister(RegisterRequest $request)
-    { 
+    {
         return $this->registerInterface->userRegister($request);
     }
 
@@ -47,7 +47,8 @@ class RegisterController extends Controller
         return $this->registerInterface->searchUser();
     }
 
-    public function changeSendEmail(){
+    public function changeSendEmail()
+    {
         return $this->registerInterface->changeSendEmail();
     }
     public function updateUser(UpdateUserRequest $request)

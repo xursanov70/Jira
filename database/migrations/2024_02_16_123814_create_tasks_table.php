@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('task_name');
             $table->string('description');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('category_name', ['Official', 'Personal']);
             $table->dateTime('start_task');
             $table->dateTime('end_task')->nullable();

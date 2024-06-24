@@ -33,7 +33,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     
-    Route::post('test', [RegisterController::class, 'test']);
+    Route::put('update/user', [RegisterController::class, 'updateUser']);
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
     Route::get('user/search', [RegisterController::class, 'searchUser']);
@@ -67,5 +67,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('send/decline/task', [SendMyTaskController::class, 'sendDeclineTAsk']);  //decline taskni bowqaga jonatw
     Route::post('share/task', [SendMyTaskController::class, 'shareTask']);  //mavjud taskni jonatiw
     Route::post('add/my/task', [SendMyTaskController::class, 'addMyTask']);  //decline taskni oziga qoshish
-    Route::put('update/user', [RegisterController::class, 'UpdateUser']);
 });
+Route::post('test', [RegisterController::class, 'test']);  //decline taskni oziga qoshish
