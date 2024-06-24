@@ -2,12 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Notifications\DeclineNotification;
+use App\Mail\DeclineTaskMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class DeclineTaskJob implements ShouldQueue
 {
@@ -16,11 +17,11 @@ class DeclineTaskJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public $message;
+    public $taskMessage;
     public $user;
-    public function __construct($message, $user)
+    public function __construct($taskMessage, $user)
     {
-        $this->message = $message;
+        $this->taskMessage = $taskMessage;
         $this->user = $user;
     }
 
@@ -29,6 +30,6 @@ class DeclineTaskJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->user->notify(new DeclineNotification($this->message));
+        Mail::to($this->user['email'])->send(new DeclineTaskMail($this->taskMessage));
     }
 }

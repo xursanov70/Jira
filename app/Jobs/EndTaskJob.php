@@ -2,12 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Notifications\EndTaskNotification;
+use App\Mail\EndTaskMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class EndTaskJob implements ShouldQueue
 {
@@ -16,11 +17,11 @@ class EndTaskJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public $message;
+    public $taskMessage;
     public $user;
-    public function __construct($message, $user)
+    public function __construct($taskMessage, $user)
     {
-        $this->message = $message;
+        $this->taskMessage = $taskMessage;
         $this->user = $user;
     }
 
@@ -29,6 +30,6 @@ class EndTaskJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->user->notify(new EndTaskNotification($this->message));
+        Mail::to($this->user['email'])->send(new EndTaskMail($this->taskMessage));
     }
 }

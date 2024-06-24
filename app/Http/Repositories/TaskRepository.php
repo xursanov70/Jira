@@ -12,7 +12,6 @@ use App\Jobs\EndTaskJob;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
-use App\Notifications\EndTaskNotification;
 use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskInterface
@@ -79,16 +78,8 @@ class TaskRepository implements TaskInterface
                     $real_task->update(['end_task_time' => $formattedTime]);
 
                     $user = User::where('id', $real_task->user_id)->where('active', true)->first();
-                    $message = [
-                        "task_name" => $task->task_name,
-                        "description" => $task->description,
-                        "category_name" => $task->category_name,
-                        "original_task" => $task->original_task,
-                        "high" => $task->high,
-                    ];
                     if ($user->send_email == true) {
-                        dispatch(new EndTaskJob($message, $user));
-                        // $user->notify(new EndTaskNotification($message));
+                        dispatch(new EndTaskJob($task, $user));
                     }
                 }
                 $task->active = false;

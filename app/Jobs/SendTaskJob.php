@@ -2,12 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Notifications\SendTaskNotification;
+use App\Mail\SendTaskMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class SendTaskJob implements ShouldQueue
 {
@@ -16,11 +17,11 @@ class SendTaskJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public $message;
+    public $taskMessage;
     public $user;
-    public function __construct($message, $user)
+    public function __construct($taskMessage, $user)
     {
-        $this->message = $message;
+        $this->taskMessage = $taskMessage;
         $this->user = $user;
     }
 
@@ -29,6 +30,6 @@ class SendTaskJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->user->notify(new SendTaskNotification($this->message));
+        Mail::to($this->user['email'])->send(new SendTaskMail($this->taskMessage));
     }
 }
