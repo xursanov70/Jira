@@ -9,6 +9,6 @@ use App\Http\Requests\ShareTaskRequest;
 interface SendMyTaskInterface
 {
     function addMyTask(AddMyTaskRequest $request);
-    function sendDeclineTAsk(SendDeclineTaskRequest $request);
+    function sendDeclineTask(SendDeclineTaskRequest $request);
     function shareTask(ShareTaskRequest $request);
 }

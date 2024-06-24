@@ -42,9 +42,6 @@ class TaskController extends Controller
 
     public function admin(){
 
-        if ($this->can('task', 'get') == 'denied')
-        return response()->json(["message" => "Sizning huquqingiz yo'q!"], 403);
-
         return $this->taskInterface->admin();
     }
 

@@ -33,7 +33,11 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     
+<<<<<<< HEAD
     Route::put('update/user', [RegisterController::class, 'UpdateUser']);
+=======
+    Route::put('update/user', [RegisterController::class, 'updateUser']);
+>>>>>>> origin/main
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
     Route::get('user/search', [RegisterController::class, 'searchUser']);
@@ -64,7 +68,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('for/me/tasks', [SendTaskController::class, 'forMeTasks']);  //menga kegan tasklar
     Route::get('my/send/tasks', [SendTaskController::class, 'mySendTasks']);  //men jonatgan tasklar
     
-    Route::post('send/decline/task', [SendMyTaskController::class, 'sendDeclineTAsk']);  //decline taskni bowqaga jonatw
+    Route::post('send/decline/task', [SendMyTaskController::class, 'sendDeclineTask']);  //decline taskni bowqaga jonatw
     Route::post('share/task', [SendMyTaskController::class, 'shareTask']);  //mavjud taskni jonatiw
     Route::post('add/my/task', [SendMyTaskController::class, 'addMyTask']);  //decline taskni oziga qoshish
 });
+

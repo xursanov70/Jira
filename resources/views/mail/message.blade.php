@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Email code send</title>
+    <title>Email code jo'natildi!</title>
 </head>
 
 <body>
