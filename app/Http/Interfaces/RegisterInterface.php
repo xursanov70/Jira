@@ -17,7 +17,6 @@ interface RegisterInterface
     function userLogin(LoginRequest $request);
     function getUsers();
     function authUser();
-    function updateUser(UpdateUserRequest $request);
     function searchUser();
     function changeSendEmail();
 }

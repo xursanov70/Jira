@@ -58,7 +58,6 @@ class TaskRepository implements TaskInterface
 
     public function endTask(int $task_id)
     {
-<<<<<<< HEAD
         try{
         $formattedTime = date('Y-m-d H:i');
 
@@ -79,22 +78,15 @@ class TaskRepository implements TaskInterface
               $real_task->update(['end_task_time' => $formattedTime]);
           
             $user = User::where('id', $real_task->user_id)->where('active', true)->first();
-            $message = [
-                "task_name" => $task->task_name,
-                "description" => $task->description,
-                "category_name" => $task->category_name,
-                "original_task" => $task->original_task,
-                "high" => $task->high,
-            ];
+            
             if ($user->send_email == true) {
-                $user->notify(new EndTaskNotification($message));
+                dispatch(new EndTaskJob($task, $user));
             }
         }
             $task->active = false;
             $task->save();
             return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task], 200);    
-=======
-        try {
+        
             $formattedTime = date('Y-m-d H:i');
 
             $task = Task::where('id', $task_id)
@@ -122,23 +114,15 @@ class TaskRepository implements TaskInterface
                 $task->save();
                 return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task], 200);
             }
-        } catch (\Exception $exception) {
+        } }catch (\Exception $exception) {
             return response()->json([
                 "message" => "Task tugatishda xatolik yuz berdi",
                 "error" => $exception->getMessage(),
                 "line" => $exception->getLine(),
                 "file" => $exception->getFile()
             ]);
->>>>>>> origin/main
+
         }
-    } catch (\Exception $exception) {
-        return response()->json([
-            "message" => "Task tugatishda xatolik yuz berdi",
-            "error" => $exception->getMessage(),
-            "line" => $exception->getLine(),
-            "file" => $exception->getFile()
-        ]);
-    }
     }
 
     public function searchTask()

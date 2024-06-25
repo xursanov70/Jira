@@ -111,11 +111,7 @@ class SendTaskRepository implements SendTaskInterface
                 'start_task' => $formattedTime,
                 'original_task' => $send_task->original_task,
                 'high' => $send_task->high,
-<<<<<<< HEAD
-                'real_task' => $send_task->id,
-=======
                 'real_task' => $send_task->id
->>>>>>> origin/main
             ]);
             if ($user->send_email == true) {
                 dispatch(new AcceptTaskJob($taskMessage, $user));

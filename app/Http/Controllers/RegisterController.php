@@ -56,8 +56,4 @@ class RegisterController extends Controller
     {
         return $this->registerInterface->changeSendEmail();
     }
-    public function updateUser(UpdateUserRequest $request)
-    {
-        return $this->registerInterface->updateUser($request);
-    }
 }
