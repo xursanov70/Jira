@@ -31,9 +31,10 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('user/register', [RegisterController::class, 'userRegister']);
 });
 
+Route::get('test', [RegisterController::class, 'test']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     
-    Route::put('update/user', [RegisterController::class, 'UpdateUser']);
+    Route::put('update/password', [RegisterController::class, 'updatePassword']);
 
     Route::get('get/users', [RegisterController::class, 'getUsers']);
     Route::get('user/auth', [RegisterController::class, 'authUser']);
