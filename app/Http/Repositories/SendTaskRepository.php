@@ -12,6 +12,9 @@ use App\Jobs\SendTaskJob;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\AcceptTaskNotification;
+use App\Notifications\DeclineTaskNotification;
+use App\Notifications\SendTaskNotification;
 use Illuminate\Support\Facades\Auth;
 
 class SendTaskRepository implements SendTaskInterface
@@ -37,6 +40,8 @@ class SendTaskRepository implements SendTaskInterface
             'high' => $request->high,
             'send_time' => $formattedTime
         ]);
+        auth()->user()->notify(new SendTaskNotification($taskMessage));
+
         if ($user->send_email == true) {
             dispatch(new SendTaskJob($taskMessage, $user));
         }
@@ -76,6 +81,7 @@ class SendTaskRepository implements SendTaskInterface
             $user = User::where('id', $partner_id)
                 ->where('active', true)
                 ->first();
+                auth()->user()->notify(new SendTaskNotification($taskMessage));
             if ($user->send_email == true) {
                 dispatch(new SendTaskJob($taskMessage, $user));
             }
@@ -113,6 +119,9 @@ class SendTaskRepository implements SendTaskInterface
                 'high' => $send_task->high,
                 'real_task' => $send_task->id
             ]);
+
+            auth()->user()->notify(new AcceptTaskNotification($taskMessage));
+
             if ($user->send_email == true) {
                 dispatch(new AcceptTaskJob($taskMessage, $user));
             }
@@ -151,6 +160,8 @@ class SendTaskRepository implements SendTaskInterface
             ]);
 
             $user = User::where('id', $send_task->user_id)->where('active', true)->first();
+
+            auth()->user()->notify(new DeclineTaskNotification($send_task));
 
             if ($user->send_email == true) {
                 dispatch(new DeclineTaskJob($send_task, $user));

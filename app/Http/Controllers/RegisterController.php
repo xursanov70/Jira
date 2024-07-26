@@ -63,6 +63,7 @@ class RegisterController extends Controller
     }
 
     public function updatePassword(UpdatePasswordRequest $request){
+        
         $user = User::find(auth()->user()->id);
 
         if (!Hash::check($request->input('password'), $user->password)) {

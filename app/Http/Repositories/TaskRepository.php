@@ -12,6 +12,7 @@ use App\Jobs\EndTaskJob;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\EndTaskNotification;
 use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskInterface
@@ -58,35 +59,7 @@ class TaskRepository implements TaskInterface
 
     public function endTask(int $task_id)
     {
-        try{
-        $formattedTime = date('Y-m-d H:i');
-
-        $task = Task::where('id', $task_id)
-            ->where('user_id', Auth::user()->id)
-            ->where('active', true)
-            ->where('status', 'enable')
-            ->first();
-
-        if (!$task) {
-            return response()->json(["message" => "Yuborilgan taskni tugata olmaysiz!"], 403);
-        } else {
-            $task->update([
-                'end_task' => $formattedTime
-            ]);
-          $real_task = SendTask::where('id', $task->real_task)->first();
-          if ($real_task){
-              $real_task->update(['end_task_time' => $formattedTime]);
-          
-            $user = User::where('id', $real_task->user_id)->where('active', true)->first();
-            
-            if ($user->send_email == true) {
-                dispatch(new EndTaskJob($task, $user));
-            }
-        }
-            $task->active = false;
-            $task->save();
-            return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task], 200);    
-        
+        try {
             $formattedTime = date('Y-m-d H:i');
 
             $task = Task::where('id', $task_id)
@@ -106,6 +79,7 @@ class TaskRepository implements TaskInterface
                     $real_task->update(['end_task_time' => $formattedTime]);
 
                     $user = User::where('id', $real_task->user_id)->where('active', true)->first();
+                    auth()->user()->notify(new EndTaskNotification($task));
                     if ($user->send_email == true) {
                         dispatch(new EndTaskJob($task, $user));
                     }
@@ -114,14 +88,13 @@ class TaskRepository implements TaskInterface
                 $task->save();
                 return response()->json(["message" => "Task muvaffaqqiyatli tugatildi!", "data" => $task], 200);
             }
-        } }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json([
                 "message" => "Task tugatishda xatolik yuz berdi",
                 "error" => $exception->getMessage(),
                 "line" => $exception->getLine(),
                 "file" => $exception->getFile()
             ]);
-
         }
     }
 
@@ -198,7 +171,7 @@ class TaskRepository implements TaskInterface
 
     public function admin()
     {
-        if (Auth::user()->status != 'admin'){
+        if (Auth::user()->status != 'admin') {
             return response()->json(["message" => "Sizning huquqingiz yo'q!"], 403);
         }
         $finish = request('finish');

@@ -10,6 +10,7 @@ use App\Jobs\SendTaskJob;
 use App\Models\SendTask;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\SendTaskNotification;
 use Illuminate\Support\Facades\Auth;
 
 class SendMyTaskRepository implements SendMyTaskInterface
@@ -38,6 +39,8 @@ class SendMyTaskRepository implements SendMyTaskInterface
             $decline_task->save();
             $user = User::where('id', $request_partner_id)->where('active', true)->first();
 
+            auth()->user()->notify(new SendTaskNotification($taskMessage));
+            
             if ($user->send_email == true) {
                 dispatch(new SendTaskJob($decline_task, $user));
             }
@@ -118,6 +121,7 @@ class SendMyTaskRepository implements SendMyTaskInterface
                 'send_time' => $formattedTime
             ]);
             $user = User::where('id', $request_user_id)->where('active', true)->first();
+            auth()->user()->notify(new SendTaskNotification($taskMessage));
             if ($user->send_email == true) {
                 dispatch(new SendTaskJob($message, $user));
             }
