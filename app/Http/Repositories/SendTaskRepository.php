@@ -22,31 +22,31 @@ class SendTaskRepository implements SendTaskInterface
     public function createSendTask(SendTaskRequest $request)
     {
         try {
-        $formattedTime = date('Y-m-d H:i');
-        $partner = $request->partner_id;
-        $auth = Auth::user()->id;
-        $user = User::where('id', $partner)->where('active', true)->first();
-        if ($partner == $auth) {
-            return response()->json(["message" => "O'zingiz uchun task yarata olmaysiz!"], 403);
-        }
+            $formattedTime = date('Y-m-d H:i');
+            $partner = $request->partner_id;
+            $auth = Auth::user()->id;
+            $user = User::where('id', $partner)->where('active', true)->first();
+            if ($partner == $auth) {
+                return response()->json(["message" => "O'zingiz uchun task yarata olmaysiz!"], 403);
+            }
 
-        $taskMessage = SendTask::create([
-            'user_id' => $auth,
-            'partner_id' => $partner,
-            'task_name' => $request->task_name,
-            'description' => $request->description,
-            'category_name' => $request->category_name,
-            'original_task' => $request->original_task,
-            'high' => $request->high,
-            'send_time' => $formattedTime
-        ]);
-        auth()->user()->notify(new SendTaskNotification($taskMessage));
+            $taskMessage = SendTask::create([
+                'user_id' => $auth,
+                'partner_id' => $partner,
+                'task_name' => $request->task_name,
+                'description' => $request->description,
+                'category_name' => $request->category_name,
+                'original_task' => $request->original_task,
+                'high' => $request->high,
+                'send_time' => $formattedTime
+            ]);
+            auth()->user()->notify(new SendTaskNotification($taskMessage));
 
-        if ($user->send_email == true) {
-            dispatch(new SendTaskJob($taskMessage, $user));
-        }
+            if ($user->send_email == true) {
+                dispatch(new SendTaskJob($taskMessage, $user));
+            }
 
-        return response()->json(["message" => "Task muvaffaqqiyatli yuborildi!", "data" => $taskMessage], 201);
+            return response()->json(["message" => "Task muvaffaqqiyatli yuborildi!", "data" => $taskMessage], 201);
         } catch (\Exception $exception) {
             return response()->json([
                 "message" => "Task yuborishda xatolik yuz berdi",
@@ -81,7 +81,7 @@ class SendTaskRepository implements SendTaskInterface
             $user = User::where('id', $partner_id)
                 ->where('active', true)
                 ->first();
-                auth()->user()->notify(new SendTaskNotification($taskMessage));
+            auth()->user()->notify(new SendTaskNotification($taskMessage));
             if ($user->send_email == true) {
                 dispatch(new SendTaskJob($taskMessage, $user));
             }
@@ -233,7 +233,7 @@ class SendTaskRepository implements SendTaskInterface
             ->when($accept !== null, function ($query) use ($accept) {
                 return $query->where('accept', $accept);
             })
-            ->when($decline !== null, function ($query) use ($decline) { 
+            ->when($decline !== null, function ($query) use ($decline) {
                 return $query->where('decline', $decline);
             })
             ->orderByRaw("FIELD(high, 'high', 'medium', 'low')")

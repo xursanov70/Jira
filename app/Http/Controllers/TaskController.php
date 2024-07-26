@@ -36,20 +36,24 @@ class TaskController extends Controller
         return $this->taskInterface->searchTask();
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->taskInterface->user();
     }
 
-    public function admin(){
+    public function admin()
+    {
 
         return $this->taskInterface->admin();
     }
 
-    public function addEndTask(AddEndTaskRequest $request){
+    public function addEndTask(AddEndTaskRequest $request)
+    {
         return $this->taskInterface->addEndTask($request);
     }
 
-    public function deleteEndTask(DeleteEndTaskRequest $request){
+    public function deleteEndTask(DeleteEndTaskRequest $request)
+    {
         return $this->taskInterface->deleteEndTask($request);
     }
 }

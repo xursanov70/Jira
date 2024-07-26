@@ -6,6 +6,7 @@ use App\Http\Requests\ConfirmCodeRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SendEmailRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 
 interface RegisterInterface
@@ -19,4 +20,5 @@ interface RegisterInterface
     function authUser();
     function searchUser();
     function changeSendEmail();
+    function updatePassword(UpdatePasswordRequest $request);
 }

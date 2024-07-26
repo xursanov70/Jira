@@ -40,7 +40,7 @@ class SendMyTaskRepository implements SendMyTaskInterface
             $user = User::where('id', $request_partner_id)->where('active', true)->first();
 
             auth()->user()->notify(new SendTaskNotification($taskMessage));
-            
+
             if ($user->send_email == true) {
                 dispatch(new SendTaskJob($decline_task, $user));
             }
